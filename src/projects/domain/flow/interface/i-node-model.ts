@@ -1,5 +1,6 @@
 import { IPoint } from '../../../shared/form-builder/interface/i-point';
 import { NodeType } from '../../../types/node-type';
+import { INodeOutputModel } from './i-node-output-model';
 import { INodeValueModel } from './i-node-value-model';
 
 export interface INodeModel<TKey = string> {
@@ -8,6 +9,8 @@ export interface INodeModel<TKey = string> {
   description?: string;
 
   isExpanded?: boolean;
+
+  outputs: INodeOutputModel<TKey>[];
 
   input?: TKey;
 

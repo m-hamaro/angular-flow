@@ -1,7 +1,10 @@
 import { inject, Injectable, Injector } from '@angular/core';
 import { CreateFlowRequest } from './create-flow-request';
 import { IFlowModel } from '../interface/i-flow-model';
-import { throwError } from 'rxjs';
+import { CreateIncomingCallNodeHandler } from '../node/create-incoming-call-node/create-incoming-call-node-handler';
+import { CreateIncomingCallNodeRequest } from '../node/create-incoming-call-node/create-incoming-call-node-request';
+import { CreateDisconnectNodeHandler } from '../node/create-disconnect-node/create-disconnect-node-handler';
+import { CreateDisconnectNodeRequest } from '../node/create-disconnect-node/create-disconnect-node-request';
 
 @Injectable({
   providedIn: 'root',
@@ -9,19 +12,45 @@ import { throwError } from 'rxjs';
 export class CreateFlowHandler {
   private readonly injector = inject(Injector);
 
-  handle(request: CreateFlowRequest) {
+  handle(request: CreateFlowRequest): IFlowModel {
     const existingFlow: IFlowModel | undefined = request.flows.find(
       (x) => x.name === request.name
     );
 
     if (existingFlow) {
-      throwError(() => new Error('そのフローは既に登録されています'));
+      throw new Error('そのフローは既に登録されています');
     }
 
     const height = window.innerHeight;
 
     const width = window.innerWidth;
 
-    // const incomingCallNode = this.injector.get(CreateInComingCall)
+    const incomingCallNode = this.injector
+      .get(CreateIncomingCallNodeHandler)
+      .handle(
+        new CreateIncomingCallNodeRequest({
+          x: width / 2,
+          y: (height / 8) * 2,
+        })
+      );
+
+    const disconnectNode = this.injector
+      .get(CreateDisconnectNodeHandler)
+      .handle(
+        new CreateDisconnectNodeRequest({
+          x: width / 2,
+          y: (height / 8) * 6,
+        })
+      );
+
+    if (incomingCallNode.outputs.length) {
+      incomingCallNode.outputs[0].connectedTo = disconnectNode.input;
+    }
+
+    return {
+      key: request.key,
+      name: request.name,
+      nodes: [incomingCallNode, disconnectNode],
+    };
   }
 }
