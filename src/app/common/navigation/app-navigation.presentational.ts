@@ -1,0 +1,46 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
+
+interface INavigationItem {
+  key: string;
+  name: string;
+  icon: string;
+  disabled: boolean;
+}
+
+@Component({
+  selector: 'nav[app-navigation]',
+  styleUrls: ['app-navigation.presentational.scss'],
+  templateUrl: 'app-navigation.presentational.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, RouterLinkActive, MatIcon],
+})
+export class AppNavigationPresentational {
+  public menu: INavigationItem[] = [
+    {
+      key: 'home',
+      name: 'Home',
+      icon: 'home',
+      disabled: true,
+    },
+    {
+      key: 'flow',
+      name: 'Flow',
+      icon: 'timeline',
+      disabled: false,
+    },
+    {
+      key: 'form-builder',
+      name: 'Form Builder',
+      icon: 'build',
+      disabled: true,
+    },
+    {
+      key: 'master',
+      name: 'Master',
+      icon: 'list',
+      disabled: true,
+    },
+  ];
+}
