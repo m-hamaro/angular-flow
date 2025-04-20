@@ -1,4 +1,5 @@
 <workflow-list-presentational
   (onCreateFlow)="onCreateFlow($event)"
+  (onRemoveFlow)="onRemoveFlow($event)"
   [flows]="this.flowUseCase.state.flows()"
 />

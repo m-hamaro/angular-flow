@@ -28,7 +28,7 @@ import { Subscription } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FFlowModule, FormBuilderDirective, MatIcon, ReactiveFormsModule],
   host: {
-    '[style.border-top-color]': 'model.color',
+    '[style.border-top-color]': 'model().color',
   },
 })
 export class WorkflowNodePresentational

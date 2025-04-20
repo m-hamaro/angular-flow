@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { WorkflowListPresentational } from '../presentational/workflow-list.presentational';
-import { WorkflowListUseCase } from '../use-case/workflow-list.use-case';
 import { CreateFlowAction } from '../../../../domain/flow/create/create-flow-action';
 import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
+import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'workflow-list-container',
@@ -12,13 +13,23 @@ import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
   imports: [WorkflowListPresentational],
 })
 export class WorkflowListContainer {
-  readonly useCase = inject(WorkflowListUseCase);
+  private readonly router = inject(Router);
 
   readonly flowUseCase = inject(FlowUseCase);
 
-  onCreateFlow(action: CreateFlowAction): void {
-    this.useCase.createFlow(action);
+  private readonly flows = computed(() => this.flowUseCase.state.flows());
 
-    this.flowUseCase.create(this.flowUseCase.state.flows(), action);
+  onCreateFlow(action: CreateFlowAction): void {
+    this.flowUseCase.create(this.flows(), action);
+  }
+
+  onRemoveFlow(action: RemoveFlowAction): void {
+    this.flowUseCase.remove(this.flows(), action);
+
+    if (this.flows().length) {
+      this.router.navigateByUrl(`/flow/${this.flows()[0].key}`);
+    } else {
+      this.router.navigateByUrl(`/flow`);
+    }
   }
 }

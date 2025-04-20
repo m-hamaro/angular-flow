@@ -8,6 +8,7 @@ import {
   input,
   OnDestroy,
   OnInit,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -62,6 +63,9 @@ import { FormsModule } from '@angular/forms';
 import { WorkflowNodePresentational } from '../node/workflow-node.presentational';
 import { INodeValueModel } from '../../../../domain/flow/interface/i-node-value-model';
 import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
+import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
+import { ChangeNodeHandler } from '../../../domain/node/change/change-node-handler';
+import { ChangeNodeRequest } from '../../../domain/node/change/change-node-request';
 
 @Component({
   selector: 'workflow-editor-presentational',
@@ -114,6 +118,10 @@ export class WorkflowEditorPresentational
 
   readonly eConnectableSide = EFConnectableSide;
 
+  createNode = output<CreateNodeAction>();
+
+  changeNodePosition = output<ChangeNodePositionAction>();
+
   ngOnInit(): void {
     this.subscription.add(this.subscriptionReloadEvents());
   }
@@ -147,6 +155,8 @@ export class WorkflowEditorPresentational
       event.data,
       event.rect
     );
+
+    this.createNode.emit(createAction);
   }
 
   onNodePositionChanged(point: IPoint, node: INodeViewModel): void {
@@ -156,6 +166,9 @@ export class WorkflowEditorPresentational
       node.key,
       point
     );
+
+    // TODO containerへ渡す
+    this.changeNodePosition.emit(changeAction);
   }
 
   onCreateConnection(event: FCreateConnectionEvent): void {
@@ -178,7 +191,36 @@ export class WorkflowEditorPresentational
     // this.cd.detectChanges();
   }
 
-  onActionPanelEvent(event: FlowActionPanelEventType) {}
+  onActionPanelEvent(event: FlowActionPanelEventType): void {
+    switch (event) {
+      case FlowActionPanelEventType.TEST_CALL:
+        break;
+
+      case FlowActionPanelEventType.DELETE_SELECTED:
+        this.onRemoveItems();
+        break;
+
+      case FlowActionPanelEventType.SELECT_ALL:
+        this.fFlowComponent()?.selectAll();
+        break;
+
+      case FlowActionPanelEventType.ZOOM_IN:
+        this.fZoomDirective().zoomIn();
+        break;
+
+      case FlowActionPanelEventType.ZOOM_OUT:
+        this.fZoomDirective().zoomOut();
+        break;
+
+      case FlowActionPanelEventType.FIT_TO_SCREEN:
+        this.fCanvasComponent()?.fitToScreen();
+        break;
+
+      case FlowActionPanelEventType.ONE_TO_ONE:
+        this.fCanvasComponent()?.resetScaleAndCenter();
+        break;
+    }
+  }
 
   onReassignConnection(event: FReassignConnectionEvent): void {
     if (!event.newFInputId) {
@@ -186,9 +228,40 @@ export class WorkflowEditorPresentational
     }
   }
 
-  onRemoveConnection(outputKey: string): void {}
+  onRemoveConnection(outputKey: string): void {
+    const connection = this.viewModel()?.connections?.find(
+      (x) => x.from === outputKey
+    );
 
-  onValueChanged(node: INodeViewModel, value: INodeValueModel): void {}
+    if (!connection) {
+      return;
+    }
+
+    const view = this.injector
+      .get(BulkRemoveHandler)
+      .handle(new BulkRemoveRequest(this.viewModel()!, [], [connection.key]));
+
+    this.viewModel.set(view);
+  }
+
+  onValueChanged(node: INodeViewModel, value: INodeValueModel): void {
+    const selected = this.fFlowComponent()?.getSelection();
+
+    if (!selected) {
+      return;
+    }
+
+    node.value = value;
+
+    const view = this.injector
+      .get(ChangeNodeHandler)
+      .handle(new ChangeNodeRequest(this.viewModel()!, node));
+
+    this.viewModel.set(view);
+
+    // TODO setTimeOut
+    this.fFlowComponent()?.select(selected.fNodeIds, selected.fConnectionIds);
+  }
 
   onRemoveItems(): void {
     const selection = this.fFlowComponent()?.getSelection();

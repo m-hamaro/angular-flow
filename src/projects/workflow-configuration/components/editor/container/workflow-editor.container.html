@@ -1,1 +1,4 @@
-<workflow-editor-presentational [flows]="flowUseCase.state.flows()" />
+<workflow-editor-presentational
+  [flows]="flowUseCase.state.flows()"
+  (createNode)="createNode($event)"
+/>
