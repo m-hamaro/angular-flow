@@ -14,7 +14,7 @@ export const routes: Routes = [
         loadComponent: () => WorkflowContainer,
         children: [
           {
-            path: 'key',
+            path: ':key',
             loadComponent: () => WorkFlowEditorContainer,
           },
         ],

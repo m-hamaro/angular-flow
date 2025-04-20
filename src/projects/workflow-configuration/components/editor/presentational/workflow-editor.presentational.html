@@ -16,9 +16,9 @@
   <f-line-alignment></f-line-alignment>
   <f-selection-area></f-selection-area>
   <f-canvas fZoom>
-    @for (connection of viewModel()!.connections;track connection.key) {
+    @for (connection of viewModel()!.connections; track connection.key) {
     <f-connection
-      [fBehavior]="cBehavior"
+      [fBehavior]="cBehavior()"
       [fConnectionId]="connection.key"
       [fType]="cType()"
       [fOutputId]="connection.from"

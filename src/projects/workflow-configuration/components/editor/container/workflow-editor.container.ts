@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { WorkflowEditorPresentational } from '../presentational/workflow-editor.presentational';
+import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 
 @Component({
   selector: 'workflow-editor-container',
@@ -8,4 +9,6 @@ import { WorkflowEditorPresentational } from '../presentational/workflow-editor.
   standalone: true,
   imports: [WorkflowEditorPresentational],
 })
-export class WorkFlowEditorContainer {}
+export class WorkFlowEditorContainer {
+  readonly flowUseCase = inject(FlowUseCase);
+}

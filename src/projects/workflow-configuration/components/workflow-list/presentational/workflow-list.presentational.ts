@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  input,
   OnDestroy,
   OnInit,
   output,
@@ -18,8 +19,10 @@ import {
 } from '@angular/router';
 import { CreateFlowAction } from '../../../../domain/flow/create/create-flow-action';
 import { IconButtonPresentational } from '../../../../shared/icon-button/icon-button.presentational';
-import { AsyncPipe } from '@angular/common';
 import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
+import { INodeModel } from '../../../../domain/flow/interface/i-node-model';
+import { NodeType } from '../../../../types/node-type';
+import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
 
 const entityName = 'flow';
 
@@ -30,7 +33,6 @@ const entityName = 'flow';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     RouterLink,
     RouterLinkActive,
     ReactiveFormsModule,
@@ -42,18 +44,21 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
 
   searchControl = signal<FormControl>(new FormControl(''));
 
-  entities = signal<IEntitySummary<string>[]>([]);
+  flows = input<IFlowModel[]>([]);
 
-  entities$ = this.searchControl().valueChanges.pipe(
-    startWith(''),
-    switchMap((search) => {
-      return of(
-        this.entities().filter((entity) =>
-          entity.name.toLowerCase().includes(search?.toLowerCase() || '')
-        )
-      );
-    })
-  );
+  // flows$ = this.searchControl().valueChanges.pipe(
+  //   startWith(''),
+  //   switchMap((search) => {
+  //     return of(
+  //       this.flows().filter((flow) => {
+  //         if (!search) {
+  //           return flow;
+  //         }
+  //         return flow.name.toLowerCase().includes(search?.toLowerCase() || '');
+  //       })
+  //     );
+  //   })
+  // );
 
   private readonly router = inject(Router);
 
@@ -72,9 +77,36 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
   onCreate(): void {
     const key = crypto.randomUUID();
 
-    const action = new CreateFlowAction(key, entityName + Date.now(), []);
+    const nodes: INodeModel<string>[] = [
+      {
+        key: crypto.randomUUID(),
+        outputs: [],
+        input: crypto.randomUUID(),
+        position: {
+          x: 960,
+          y: 236.25,
+        },
+        type: NodeType.IncomingCall,
+        value: null,
+      },
+      {
+        key: crypto.randomUUID(),
+        input: crypto.randomUUID(),
+        outputs: [],
+        position: {
+          x: 732,
+          y: 476,
+        },
+        type: NodeType.Disconnect,
+        value: null,
+      },
+    ];
+
+    const action = new CreateFlowAction(key, entityName + Date.now(), nodes);
 
     this.onCreateFlow.emit(action);
+
+    this.navigateToEntity(key);
   }
 
   onDelete(entity: IEntitySummary<string>, event: MouseEvent): void {
@@ -105,8 +137,8 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
   }
 
   private toDefaultFlow(): void {
-    if (this.entities().length > 0) {
-      this.navigateToEntity(this.entities()[0].key);
+    if (this.flows().length > 0) {
+      this.navigateToEntity(this.flows()[0].key);
     }
   }
 

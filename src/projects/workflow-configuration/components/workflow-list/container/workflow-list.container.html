@@ -1,1 +1,4 @@
-<workflow-list-presentational (onCreateFlow)="onCreateFlow($event)" />
+<workflow-list-presentational
+  (onCreateFlow)="onCreateFlow($event)"
+  [flows]="this.flowUseCase.state.flows()"
+/>

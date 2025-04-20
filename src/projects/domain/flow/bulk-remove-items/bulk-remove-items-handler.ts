@@ -5,7 +5,7 @@ import { IFlowModel } from '../interface/i-flow-model';
 @Injectable({
   providedIn: 'root',
 })
-export class BulkRemoveItemHandler {
+export class BulkRemoveItemsHandler {
   handle(request: BulkRemoveItemsRequest): IFlowModel[] {
     const flow = request.flows.find((x) => x.key === request.flowKey);
 

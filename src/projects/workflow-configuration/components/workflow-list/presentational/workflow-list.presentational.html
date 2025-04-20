@@ -8,7 +8,7 @@
 </header>
 
 <div class="list">
-  @for (item of entities$ | async;track item.key) {
+  @for (item of flows() ;track item.key) {
   <div
     class="explorer-panel-item"
     [routerLink]="item.key"

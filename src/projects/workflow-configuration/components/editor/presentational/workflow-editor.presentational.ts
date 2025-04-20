@@ -5,6 +5,7 @@ import {
   Component,
   inject,
   Injector,
+  input,
   OnDestroy,
   OnInit,
   signal,
@@ -60,6 +61,7 @@ import { FormsModule } from '@angular/forms';
 
 import { WorkflowNodePresentational } from '../node/workflow-node.presentational';
 import { INodeValueModel } from '../../../../domain/flow/interface/i-node-value-model';
+import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
 
 @Component({
   selector: 'workflow-editor-presentational',
@@ -94,15 +96,17 @@ export class WorkflowEditorPresentational
 
   private readonly cd = inject(ChangeDetectorRef);
 
+  flows = input<IFlowModel[]>([]);
+
   viewModel = signal<IFlowViewModel | undefined>(undefined);
 
   cBehavior = signal<EFConnectionBehavior>(EFConnectionBehavior.FIXED);
 
   cType = signal<EFConnectionType>(EFConnectionType.SEGMENT);
 
-  fFlowComponent = viewChild.required(FFlowComponent);
+  fFlowComponent = viewChild(FFlowComponent);
 
-  fCanvasComponent = viewChild.required(FCanvasComponent);
+  fCanvasComponent = viewChild(FCanvasComponent);
 
   fZoomDirective = viewChild.required(FZoomDirective);
 
@@ -187,7 +191,11 @@ export class WorkflowEditorPresentational
   onValueChanged(node: INodeViewModel, value: INodeValueModel): void {}
 
   onRemoveItems(): void {
-    const selection = this.fFlowComponent().getSelection();
+    const selection = this.fFlowComponent()?.getSelection();
+
+    if (!selection) {
+      return;
+    }
 
     const view = this.injector
       .get(BulkRemoveHandler)
@@ -236,7 +244,7 @@ export class WorkflowEditorPresentational
 
       case A:
         // TODO MACの場合の判定がいる？
-        this.fFlowComponent().selectAll();
+        this.fFlowComponent()?.selectAll();
         break;
     }
   }
@@ -258,9 +266,9 @@ export class WorkflowEditorPresentational
       try {
         const view = this.injector
           .get(DetailsFlowHandler)
-          .handle(new DetailsFlowRequest(key));
+          .handle(this.flows(), new DetailsFlowRequest(key));
 
-        // this.viewModel.set(view);
+        this.viewModel.set(view);
       } catch (e) {
         console.error(e);
         this.viewModel.set(undefined);
@@ -270,7 +278,7 @@ export class WorkflowEditorPresentational
         this.fFlowComponent()?.reset();
       }
 
-      //   this.cd.detectChanges();
+      // this.cd.detectChanges();
     });
   }
 }
