@@ -77,11 +77,18 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
   onCreate(): void {
     const key = crypto.randomUUID();
 
+    const outputKey = crypto.randomUUID();
+
     const nodes: INodeModel<string>[] = [
       {
         key: crypto.randomUUID(),
-        outputs: [],
-        input: crypto.randomUUID(),
+        outputs: [
+          {
+            key: crypto.randomUUID(),
+            name: '',
+            connectedTo: outputKey,
+          },
+        ],
         position: {
           x: 960,
           y: 236.25,
@@ -91,7 +98,7 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
       },
       {
         key: crypto.randomUUID(),
-        input: crypto.randomUUID(),
+        input: outputKey,
         outputs: [],
         position: {
           x: 732,

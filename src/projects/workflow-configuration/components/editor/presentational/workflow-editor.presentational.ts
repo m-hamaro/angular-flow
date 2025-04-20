@@ -278,7 +278,7 @@ export class WorkflowEditorPresentational
         this.fFlowComponent()?.reset();
       }
 
-      // this.cd.detectChanges();
+      this.cd.detectChanges();
     });
   }
 }

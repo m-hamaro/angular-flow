@@ -7,6 +7,7 @@ import { AppHeaderPresentational } from './header/app-header.presentational';
   selector: 'common-presentational',
   styleUrls: ['common.presentational.scss'],
   templateUrl: 'common.presentational.html',
+  standalone: true,
   imports: [RouterOutlet, AppNavigationPresentational, AppHeaderPresentational],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

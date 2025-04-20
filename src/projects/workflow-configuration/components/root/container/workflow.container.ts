@@ -5,6 +5,7 @@ import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 
 @Component({
   selector: 'workflow-container',
+  styleUrls: ['workflow.container.scss'],
   templateUrl: 'workflow.container.html',
   standalone: true,
   imports: [WorkFlowPresentational],
