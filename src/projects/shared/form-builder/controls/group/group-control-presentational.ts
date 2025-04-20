@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewChild,
+  viewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { IBuilderValueGroupViewModel } from '../../interface/i-builder-value-group-view-model';
@@ -16,26 +16,29 @@ import { FORM_BUILDER_CONTROL_MAP } from '../../interface/form-builder-control-m
   imports: [],
 })
 export class GroupControlPresentational {
-  @ViewChild('containerRef', { static: true, read: ViewContainerRef })
-  viewContainer: ViewContainerRef | undefined;
+  // @ViewChild('containerRef', { static: true, read: ViewContainerRef })
+  // viewContainer: ViewContainerRef | undefined;
+
+  viewContainer = viewChild.required<ViewContainerRef | undefined>(
+    'containerRef'
+  );
 
   viewModel: IBuilderValueGroupViewModel | undefined;
 
   render(model: IBuilderValueGroupViewModel): void {
     this.viewModel = model;
 
-    if (!this.viewContainer) {
+    if (!this.viewContainer()) {
       throw new Error(`要素 ${model.name} が見つかりません`);
     }
 
-    this.viewContainer.clear();
+    this.viewContainer()!.clear();
 
     model.controls.forEach((control) => {
-      const component = this.viewContainer!.createComponent(
+      const component = this.viewContainer()!.createComponent(
         FORM_BUILDER_CONTROL_MAP[control.type]
       );
       component.instance.viewModel = control;
     });
   }
 }
-//https://github.com/Foblex/f-flow-example/blob/main/projects/shared-components/src/lib/form-builder/controls/group/group-control.component.ts
