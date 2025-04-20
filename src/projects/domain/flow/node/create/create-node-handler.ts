@@ -11,6 +11,8 @@ import { CreatePlayTextNodeHandler } from '../create-play-text-node/create-play-
 import { CreatePlayTextNodeRequest } from '../create-play-text-node/create-play-text-node-request';
 import { CreateNodeRequest } from './create-node-request';
 import { NodeType } from '../../../../types/node-type';
+import { CreateIvrNodeHandler } from '../create-ivr-node/create-ivr-node-handler';
+import { CreateIvrNodeRequest } from '../create-ivr-node/create-ivr-node-request';
 
 @Injectable({
   providedIn: 'root',
@@ -45,11 +47,11 @@ export class CreateNodeHandler {
           .get(CreatePlayTextNodeHandler)
           .handle(new CreatePlayTextNodeRequest(request.position));
         break;
-      //   case NodeType.UserInput:
-      //     result = this.injector
-      //       .get(CreateIvrNodeHandler)
-      //       .handle(new CreateIvrNodeRequest(request.position));
-      //     break;
+      case NodeType.UserInput:
+        result = this.injector
+          .get(CreateIvrNodeHandler)
+          .handle(new CreateIvrNodeRequest(request.position));
+        break;
       case NodeType.ToOperator:
         result = this.injector
           .get(CreateConversationNodeHandler)

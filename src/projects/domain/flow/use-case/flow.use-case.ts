@@ -52,7 +52,7 @@ export class FlowUseCase {
     flows: IFlowModel[],
     { flowKey, type, position }: CreateNodeAction
   ): void {
-    const result = this.injector
+    const result: IFlowModel[] = this.injector
       .get(CreateNodeHandler)
       .handle(new CreateNodeRequest(flowKey, type, position, flows));
 

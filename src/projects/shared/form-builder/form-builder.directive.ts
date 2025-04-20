@@ -34,7 +34,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class FormBuilderDirective
   implements OnInit, OnDestroy, ControlValueAccessor
 {
-  private subscription: Subscription = Subscription.EMPTY;
+  private subscription$: Subscription = Subscription.EMPTY;
 
   private readonly $value = signal<IFormBuilderValue | null>(null);
 
@@ -63,9 +63,6 @@ export class FormBuilderDirective
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
-  }
 
   ngOnInit(): void {
     this.rebuild(this.$value());
@@ -74,7 +71,7 @@ export class FormBuilderDirective
   ngOnDestroy(): void {
     this.dispose();
 
-    this.subscription.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   public dispose(): void {
@@ -92,9 +89,9 @@ export class FormBuilderDirective
 
     this.$viewModel.set(viewModel);
 
-    this.subscription.unsubscribe();
+    this.subscription$.unsubscribe();
 
-    this.subscription = this.subscribeOnFormChanges(viewModel);
+    this.subscription$ = this.subscribeOnFormChanges(viewModel);
 
     this.render(viewModel.groups);
   }

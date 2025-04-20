@@ -88,9 +88,9 @@ import { ChangeNodeRequest } from '../../../domain/node/change/change-node-reque
 export class WorkflowEditorPresentational
   implements OnInit, AfterViewInit, OnDestroy
 {
-  private subscription: Subscription = new Subscription();
+  private subscription$: Subscription = new Subscription();
 
-  private hasChanges: Subject<void> = new Subject<void>();
+  private hasChanges$: Subject<void> = new Subject<void>();
 
   private readonly injector = inject(Injector);
 
@@ -123,7 +123,7 @@ export class WorkflowEditorPresentational
   changeNodePosition = output<ChangeNodePositionAction>();
 
   ngOnInit(): void {
-    this.subscription.add(this.subscriptionReloadEvents());
+    this.subscription$.add(this.subscriptionReloadEvents());
   }
 
   ngAfterViewInit(): void {
@@ -131,7 +131,7 @@ export class WorkflowEditorPresentational
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription$.unsubscribe();
   }
 
   onLoaded(): void {
@@ -157,6 +157,8 @@ export class WorkflowEditorPresentational
     );
 
     this.createNode.emit(createAction);
+
+    this.hasChanges$.next();
   }
 
   onNodePositionChanged(point: IPoint, node: INodeViewModel): void {
@@ -266,7 +268,7 @@ export class WorkflowEditorPresentational
   onRemoveItems(): void {
     const selection = this.fFlowComponent()?.getSelection();
 
-    if (!selection) {
+    if (!selection || !this.viewModel()) {
       return;
     }
 
@@ -332,8 +334,8 @@ export class WorkflowEditorPresentational
     );
   }
 
-  private subscriptionReloadEvents() {
-    return merge(this.hasChanges, this.routeKeyChanges).subscribe((res) => {
+  private subscriptionReloadEvents(): Subscription {
+    return merge(this.hasChanges$, this.routeKeyChanges).subscribe((res) => {
       const key = this.activatedRoute.snapshot.params['key'];
 
       try {

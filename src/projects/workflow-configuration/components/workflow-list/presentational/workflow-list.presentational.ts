@@ -109,7 +109,11 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
       },
     ];
 
-    const action = new CreateFlowAction(key, entityName + Date.now(), nodes);
+    const action = new CreateFlowAction(
+      key,
+      `${entityName}${Date.now()}`,
+      nodes
+    );
 
     this.onCreateFlow.emit(action);
 
