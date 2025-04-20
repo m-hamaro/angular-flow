@@ -1,0 +1,276 @@
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  Injector,
+  OnDestroy,
+  OnInit,
+  signal,
+  viewChild,
+} from '@angular/core';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  merge,
+  Observable,
+  startWith,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import { IFlowViewModel } from '../../../interface/i-flow-view-model';
+import {
+  EFConnectableSide,
+  EFConnectionBehavior,
+  EFConnectionType,
+  EFMarkerType,
+  FCanvasComponent,
+  FCreateConnectionEvent,
+  FCreateNodeEvent,
+  FFlowComponent,
+  FFlowModule,
+  FReassignConnectionEvent,
+  FZoomDirective,
+} from '@foblex/flow';
+import {
+  A,
+  BACKSPACE,
+  DASH,
+  DELETE,
+  NUMPAD_MINUS,
+  NUMPAD_PLUS,
+} from '@angular/cdk/keycodes';
+import { BulkRemoveHandler } from '../../../domain/bulk-remove/bulk-remove-handler';
+import { BulkRemoveRequest } from '../../../domain/bulk-remove/bulk-remove-request';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { IPoint } from '../../../../shared/form-builder/interface/i-point';
+import { DetailsFlowHandler } from '../../../domain/details/details-flow-handler';
+import { DetailsFlowRequest } from '../../../domain/details/details-flow-request';
+import { INodeViewModel } from '../../../interface/i-node-view-model';
+import { ChangeNodePositionAction } from '../../../../domain/flow/node/change-position/change-node-position-action';
+import { CreateConnectionHandler } from '../../../domain/connection/create-connection/create-connection-handler';
+import { CreateConnectionRequest } from '../../../domain/connection/create-connection/create-connection-request';
+import { CreateNodeAction } from '../../../../domain/flow/node/create/create-node-action';
+import { WorkflowActionPanelPresentational } from '../action-panel/workflow-action-panel.presentational';
+import { WorkflowPalettePresentational } from '../palette/workflow-palette.presentational';
+import { FlowActionPanelEventType } from '../../../../types/flow-action-panel-event-type';
+import { FormsModule } from '@angular/forms';
+
+import { WorkflowNodePresentational } from '../node/workflow-node.presentational';
+import { INodeValueModel } from '../../../../domain/flow/interface/i-node-value-model';
+
+@Component({
+  selector: 'workflow-editor-presentational',
+  styleUrls: ['workflow-editor.presentational.scss'],
+  templateUrl: 'workflow-editor.presentational.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    FFlowModule,
+    WorkflowNodePresentational,
+    WorkflowActionPanelPresentational,
+    WorkflowPalettePresentational,
+    FormsModule,
+  ],
+  host: {
+    '(keydown)': 'onKeyDown($event)',
+    tabindex: '-1',
+  },
+})
+export class WorkflowEditorPresentational
+  implements OnInit, AfterViewInit, OnDestroy
+{
+  private subscription: Subscription = new Subscription();
+
+  private hasChanges: Subject<void> = new Subject<void>();
+
+  private readonly injector = inject(Injector);
+
+  private readonly router = inject(Router);
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+
+  private readonly cd = inject(ChangeDetectorRef);
+
+  viewModel = signal<IFlowViewModel | undefined>(undefined);
+
+  cBehavior = signal<EFConnectionBehavior>(EFConnectionBehavior.FIXED);
+
+  cType = signal<EFConnectionType>(EFConnectionType.SEGMENT);
+
+  fFlowComponent = viewChild.required(FFlowComponent);
+
+  fCanvasComponent = viewChild.required(FCanvasComponent);
+
+  fZoomDirective = viewChild.required(FZoomDirective);
+
+  readonly eMarkerType = EFMarkerType;
+
+  readonly eConnectableSide = EFConnectableSide;
+
+  ngOnInit(): void {
+    this.subscription.add(this.subscriptionReloadEvents());
+  }
+
+  ngAfterViewInit(): void {
+    this.onLoaded();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  onLoaded(): void {
+    const point: IPoint = {
+      x: 300,
+      y: 300,
+    };
+
+    this.fCanvasComponent()?.fitToScreen(point, false);
+  }
+
+  onCreateNode(event: FCreateNodeEvent): void {
+    const viewModel = this.viewModel();
+
+    if (!viewModel) {
+      return;
+    }
+
+    const createAction = new CreateNodeAction(
+      viewModel.key,
+      event.data,
+      event.rect
+    );
+  }
+
+  onNodePositionChanged(point: IPoint, node: INodeViewModel): void {
+    node.position = point;
+    const changeAction = new ChangeNodePositionAction(
+      this.viewModel()!.key,
+      node.key,
+      point
+    );
+  }
+
+  onCreateConnection(event: FCreateConnectionEvent): void {
+    if (!event.fInputId) {
+      return;
+    }
+
+    const view = this.injector
+      .get(CreateConnectionHandler)
+      .handle(
+        new CreateConnectionRequest(
+          this.viewModel()!,
+          event.fOutputId,
+          event.fInputId
+        )
+      );
+    this.viewModel.set(view);
+
+    // TODO
+    // this.cd.detectChanges();
+  }
+
+  onActionPanelEvent(event: FlowActionPanelEventType) {}
+
+  onReassignConnection(event: FReassignConnectionEvent): void {
+    if (!event.newFInputId) {
+      return;
+    }
+  }
+
+  onRemoveConnection(outputKey: string): void {}
+
+  onValueChanged(node: INodeViewModel, value: INodeValueModel): void {}
+
+  onRemoveItems(): void {
+    const selection = this.fFlowComponent().getSelection();
+
+    const view = this.injector
+      .get(BulkRemoveHandler)
+      .handle(
+        new BulkRemoveRequest(
+          this.viewModel()!,
+          selection.fNodeIds,
+          selection.fConnectionIds
+        )
+      );
+    this.viewModel.set(view);
+
+    // TODO いるかも
+    // this.cd.detectChanges();
+  }
+
+  onKeyDown(event: KeyboardEvent): void {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLTextAreaElement
+    ) {
+      return;
+    }
+    const keyCodeNumber = Number(event.code);
+
+    if (isNaN(keyCodeNumber)) {
+      return;
+    }
+
+    switch (keyCodeNumber) {
+      case BACKSPACE:
+      case DELETE:
+        this.onRemoveItems();
+        break;
+
+      case NUMPAD_PLUS:
+        // TODO MACの場合の判定がいる？
+        this.fZoomDirective().zoomIn();
+        break;
+
+      case NUMPAD_MINUS:
+      case DASH:
+        // TODO MACの場合の判定がいる？
+        this.fZoomDirective().zoomOut();
+        break;
+
+      case A:
+        // TODO MACの場合の判定がいる？
+        this.fFlowComponent().selectAll();
+        break;
+    }
+  }
+
+  private get routeKeyChanges(): Observable<boolean> {
+    return this.router.events.pipe(
+      startWith(new NavigationEnd(0, '', '')),
+      filter((x) => x instanceof NavigationEnd),
+      map(() => this.activatedRoute.snapshot.params['key']),
+      distinctUntilChanged(),
+      map(() => true)
+    );
+  }
+
+  private subscriptionReloadEvents() {
+    return merge(this.hasChanges, this.routeKeyChanges).subscribe((res) => {
+      const key = this.activatedRoute.snapshot.params['key'];
+
+      try {
+        const view = this.injector
+          .get(DetailsFlowHandler)
+          .handle(new DetailsFlowRequest(key));
+
+        // this.viewModel.set(view);
+      } catch (e) {
+        console.error(e);
+        this.viewModel.set(undefined);
+      }
+
+      if (res) {
+        this.fFlowComponent()?.reset();
+      }
+
+      //   this.cd.detectChanges();
+    });
+  }
+}

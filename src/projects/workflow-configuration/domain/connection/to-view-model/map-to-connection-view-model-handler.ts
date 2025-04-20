@@ -5,7 +5,7 @@ import { IConnectionViewModel } from '../../../interface/i-connection-view-model
 
 // TODO: root?
 @Injectable()
-export class MapToCOnnectionVIewModelHandler {
+export class MapToConnectionViewModelHandler {
   handle(request: MapToConnectionViewModelRequest): IConnectionViewModel[] {
     const result = this.map(request.entity);
 

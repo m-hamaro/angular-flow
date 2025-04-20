@@ -1,8 +1,11 @@
+import { Injectable } from '@angular/core';
 import { INodeModel } from '../../../../domain/flow/interface/i-node-model';
 import { NODE_STATIC_MAP } from '../../../../types/node-static-map';
 import { INodeViewModel } from '../../../interface/i-node-view-model';
 import { MapToNodeViewModelRequest } from './map-to-node-view-model-request';
 
+// TODO: root?
+@Injectable()
 export class MapToNodeViewModelHandler {
   public handle(request: MapToNodeViewModelRequest): INodeViewModel {
     const result = this.map(request.entity);

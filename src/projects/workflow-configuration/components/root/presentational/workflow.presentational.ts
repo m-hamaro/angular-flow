@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { WorkflowListContainer } from '../../workflow-list/container/workflow-list.container';
 
 @Component({
   selector: 'workflow-presentational',
@@ -7,6 +8,6 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: 'workflow.presentational.html',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, WorkflowListContainer],
 })
 export class WorkFlowPresentational {}
