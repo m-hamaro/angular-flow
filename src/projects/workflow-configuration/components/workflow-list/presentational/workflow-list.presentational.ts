@@ -77,7 +77,7 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
   onCreate(): void {
     const key = crypto.randomUUID();
 
-    const action = new CreateFlowAction(key, `${entityName}${Date.now()}`, []);
+    const action = new CreateFlowAction(key, `${entityName}${Date.now()}`);
 
     this.onCreateFlow.emit(action);
 
