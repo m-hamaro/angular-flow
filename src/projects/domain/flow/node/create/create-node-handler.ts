@@ -34,37 +34,34 @@ export class CreateNodeHandler {
   }
 
   private getNodeModel(request: CreateNodeRequest): INodeModel {
-    let result: INodeModel | undefined;
-
     switch (request.type) {
       case NodeType.IncomingCall:
-        result = this.injector
+        return this.injector
           .get(CreateIncomingCallNodeHandler)
           .handle(new CreateIncomingCallNodeRequest(request.position));
-        break;
+
       case NodeType.PlayText:
-        result = this.injector
+        return this.injector
           .get(CreatePlayTextNodeHandler)
           .handle(new CreatePlayTextNodeRequest(request.position));
-        break;
+
       case NodeType.UserInput:
-        result = this.injector
+        return this.injector
           .get(CreateIvrNodeHandler)
           .handle(new CreateIvrNodeRequest(request.position));
-        break;
+
       case NodeType.ToOperator:
-        result = this.injector
+        return this.injector
           .get(CreateConversationNodeHandler)
           .handle(new CreateConversationNodeRequest(request.position));
-        break;
+
       case NodeType.Disconnect:
-        result = this.injector
+        return this.injector
           .get(CreateDisconnectNodeHandler)
           .handle(new CreateDisconnectNodeRequest(request.position));
-        break;
+
       default:
         throw new Error('Unknown node type');
     }
-    return result;
   }
 }

@@ -47,8 +47,9 @@ export class FormBuilderDirective
   constructor() {
     effect(() => {
       if (this.value() !== this.$value()) {
-        this.$value.set(this.value());
+        this.rebuild(this.value());
       }
+      this.$value.set(this.value());
     });
   }
 
