@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  input,
   model,
   OnChanges,
   OnDestroy,

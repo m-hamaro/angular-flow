@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { INodeOutputModel } from '../../../../domain/flow/interface/i-node-output-model';
 import { INodeValueModel } from '../../../../domain/flow/interface/i-node-value-model';
 import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
@@ -8,12 +8,13 @@ import { INodeViewModel } from '../../../interface/i-node-view-model';
 import { ChangeNodeRequest } from './change-node-request';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
+import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChangeNodeHandler {
-  constructor() {}
+  private readonly flowUseCase = inject(FlowUseCase);
 
   public handle(request: ChangeNodeRequest): IFlowViewModel {
     const flow = JSON.parse(JSON.stringify(request.flow));
@@ -49,8 +50,6 @@ export class ChangeNodeHandler {
         };
       }
     );
-
-    // TODO: store
     const action = new ChangeNodeAction(
       request.flow.key,
       node.key,
@@ -58,6 +57,10 @@ export class ChangeNodeHandler {
       outputs,
       node.value
     );
+
+    const flows = this.flowUseCase.state.flows();
+
+    this.flowUseCase.changeNode(flows, action);
 
     return flow;
   }

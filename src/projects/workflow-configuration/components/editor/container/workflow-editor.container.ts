@@ -3,6 +3,9 @@ import { WorkflowEditorPresentational } from '../presentational/workflow-editor.
 import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 import { CreateNodeAction } from '../../../../domain/flow/node/create/create-node-action';
 import { ChangeNodePositionAction } from '../../../../domain/flow/node/change-position/change-node-position-action';
+import { CreateConnectionAction } from '../../../../domain/flow/create-connection/create-connection-action';
+import { BulkRemoveItemsAction } from '../../../../domain/flow/bulk-remove-items/bulk-remove-items-action';
+import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
 
 @Component({
   selector: 'workflow-editor-container',
@@ -18,5 +21,21 @@ export class WorkFlowEditorContainer {
 
   createNode(action: CreateNodeAction): void {
     this.flowUseCase.createNode(this.flows(), action);
+  }
+
+  nodePositionChanged(action: ChangeNodePositionAction): void {
+    this.flowUseCase.changeNodePosition(this.flows(), action);
+  }
+
+  createConnection(action: CreateConnectionAction): void {
+    this.flowUseCase.createConnection(this.flows(), action);
+  }
+
+  removeConnection(action: BulkRemoveItemsAction): void {
+    this.flowUseCase.removeConnection(this.flows(), action);
+  }
+
+  remove(action: RemoveFlowAction): void {
+    this.flowUseCase.remove(this.flows(), action);
   }
 }

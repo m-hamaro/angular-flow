@@ -18,6 +18,9 @@ import { BulkRemoveItemsAction } from '../bulk-remove-items/bulk-remove-items-ac
 import { BulkRemoveItemsRequest } from '../bulk-remove-items/bulk-remove-items-request';
 import { BulkRemoveItemsHandler } from '../bulk-remove-items/bulk-remove-items-handler';
 import { RemoveFlowAction } from '../remove/remove-flow-action';
+import { ChangeNodePositionAction } from '../node/change-position/change-node-position-action';
+import { ChangeNodePositionHandler } from '../node/change-position/change-node-position-handler';
+import { ChangeNodePositionRequest } from '../node/change-position/change-node-position-request';
 
 @Injectable({
   providedIn: 'root',
@@ -68,6 +71,17 @@ export class FlowUseCase {
       .handle(
         new ChangeNodeRequest(flowKey, nodeKey, position, outputs, value, flows)
       );
+
+    this.state.flows.set(result);
+  }
+
+  changeNodePosition(
+    flows: IFlowModel[],
+    { flowKey, nodeKey, position }: ChangeNodePositionAction
+  ): void {
+    const result = this.injector
+      .get(ChangeNodePositionHandler)
+      .handle(new ChangeNodePositionRequest(flowKey, nodeKey, position, flows));
 
     this.state.flows.set(result);
   }

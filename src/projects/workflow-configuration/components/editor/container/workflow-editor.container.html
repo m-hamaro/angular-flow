@@ -1,4 +1,5 @@
 <workflow-editor-presentational
   [flows]="flowUseCase.state.flows()"
   (createNode)="createNode($event)"
+  (changeNodePosition)="nodePositionChanged($event)"
 />

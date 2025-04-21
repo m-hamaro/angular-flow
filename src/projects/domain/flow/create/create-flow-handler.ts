@@ -5,6 +5,7 @@ import { CreateIncomingCallNodeHandler } from '../node/create-incoming-call-node
 import { CreateIncomingCallNodeRequest } from '../node/create-incoming-call-node/create-incoming-call-node-request';
 import { CreateDisconnectNodeHandler } from '../node/create-disconnect-node/create-disconnect-node-handler';
 import { CreateDisconnectNodeRequest } from '../node/create-disconnect-node/create-disconnect-node-request';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class CreateFlowHandler {
     );
 
     if (existingFlow) {
-      throw new Error('そのフローは既に登録されています');
+      throwError(() => new Error('そのフローは既に登録されています'));
     }
 
     const height = window.innerHeight;
@@ -28,19 +29,13 @@ export class CreateFlowHandler {
     const incomingCallNode = this.injector
       .get(CreateIncomingCallNodeHandler)
       .handle(
-        new CreateIncomingCallNodeRequest({
-          x: width / 2,
-          y: (height / 8) * 2,
-        })
+        new CreateIncomingCallNodeRequest({ x: width / 2, y: (height / 8) * 2 })
       );
 
     const disconnectNode = this.injector
       .get(CreateDisconnectNodeHandler)
       .handle(
-        new CreateDisconnectNodeRequest({
-          x: width / 2,
-          y: (height / 8) * 6,
-        })
+        new CreateDisconnectNodeRequest({ x: width / 2, y: (height / 8) * 6 })
       );
 
     if (incomingCallNode.outputs.length) {

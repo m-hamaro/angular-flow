@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { WorkFlowPresentational } from '../presentational/workflow.presentational';
-import { WorkflowListUseCase } from '../../workflow-list/use-case/workflow-list.use-case';
 import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 
 @Component({
@@ -9,6 +8,6 @@ import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
   templateUrl: 'workflow.container.html',
   standalone: true,
   imports: [WorkFlowPresentational],
-  providers: [WorkflowListUseCase, FlowUseCase],
+  providers: [FlowUseCase],
 })
 export class WorkflowContainer {}

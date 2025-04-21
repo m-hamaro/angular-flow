@@ -66,6 +66,8 @@ import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
 import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
 import { ChangeNodeHandler } from '../../../domain/node/change/change-node-handler';
 import { ChangeNodeRequest } from '../../../domain/node/change/change-node-request';
+import { ReassignConnectionHandler } from '../../../domain/connection/reassign-connection/reassign-connection-handler';
+import { ReassignConnectionRequest } from '../../../domain/connection/reassign-connection/reassign-connection-request';
 
 @Component({
   selector: 'workflow-editor-presentational',
@@ -225,9 +227,22 @@ export class WorkflowEditorPresentational
   }
 
   onReassignConnection(event: FReassignConnectionEvent): void {
-    if (!event.newFInputId) {
+    if (!event.newFInputId || !this.viewModel()) {
       return;
     }
+
+    const view = this.injector
+      .get(ReassignConnectionHandler)
+      .handle(
+        new ReassignConnectionRequest(
+          this.viewModel()!,
+          event.fOutputId,
+          event.oldFInputId,
+          event.newFInputId
+        )
+      );
+
+    this.viewModel.set(view);
   }
 
   onRemoveConnection(outputKey: string): void {
