@@ -1,9 +1,7 @@
 import {
   Directive,
-  effect,
   forwardRef,
   inject,
-  input,
   OnDestroy,
   OnInit,
   signal,
@@ -36,26 +34,20 @@ export class FormBuilderDirective
 {
   private subscription$: Subscription = Subscription.EMPTY;
 
-  private readonly $value = signal<IFormBuilderValue | null>(null);
+  // ControlValueAccessor からの値を受け取るための内部 Signal
+  private readonly $internalValue = signal<IFormBuilderValue | null>(null);
 
   private readonly $viewModel = signal<IBuilderValueViewModel | null>(null);
 
   private readonly container = inject(ViewContainerRef);
 
-  value = input<IFormBuilderValue | null>(null);
-
-  constructor() {
-    effect(() => {
-      if (this.value() !== this.$value()) {
-        this.rebuild(this.value());
-      }
-      this.$value.set(this.value());
-    });
-  }
-
+  // --- ControlValueAccessor の実装 ---
   writeValue(value: IFormBuilderValue | null): void {
-    if (value !== this.$value()) {
-      this.$value.set(value);
+    // 値が実際に変更された場合のみ更新と再構築を行う
+    if (value !== this.$internalValue()) {
+      this.$internalValue.set(value);
+      // 値が外部から設定されたときに UI を再構築する
+      this.rebuild(value);
     }
   }
   registerOnChange(fn: any): void {
@@ -64,41 +56,63 @@ export class FormBuilderDirective
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
   }
+  // setDisabledState?(isDisabled: boolean): void { // 必要に応じて実装 }
 
   ngOnInit(): void {
-    this.rebuild(this.$value());
+    // 初期値で一度 rebuild する（writeValue が呼ばれていればその値が使われる）
+    // this.rebuild(this.$internalValue()); // writeValue で rebuild するので、必須ではないかもしれない
+    // ただし、初期値が null で writeValue が呼ばれないケースを考慮すると
+    // ここで呼ぶか、writeValue で null でも初回描画を保証する必要がある
+    // writeValue で常に rebuild するならここは不要
   }
 
   ngOnDestroy(): void {
     this.dispose();
-
     this.subscription$.unsubscribe();
   }
 
+  /**
+   * コンテナの状態をクリアする
+   */
   public dispose(): void {
     this.container.clear();
   }
 
-  private onChange: any = () => {};
-
-  private onTouch: any = () => {};
+  private onChange: (value: IFormBuilderValue | null) => void = () => {};
+  private onTouch: () => void = () => {};
 
   private rebuild(value: IFormBuilderValue | null): void {
+    // 以前の unsubscribe 処理は subscribeOnFormChanges 前に行う
+    this.subscription$.unsubscribe();
+    this.dispose(); // コンテナをクリア
+
+    // value が null や undefined の場合、空のフォームを表示するなどの処理が必要
+    if (value === null || value === undefined) {
+      this.$viewModel.set(null); // ViewModel もリセット
+      // 必要なら空の状態を描画する処理
+      this.subscription$ = Subscription.EMPTY; // サブスクリプションも空にする
+      return; // null の場合はここで終了
+    }
+
     const viewModel = new FormBuilderModelFromValueHandler().handle(
       new FormBuilderModelFromValueRequest(value)
     );
 
     this.$viewModel.set(viewModel);
 
-    this.subscription$.unsubscribe();
-
-    this.subscription$ = this.subscribeOnFormChanges(viewModel);
-
-    this.render(viewModel.groups);
+    if (viewModel && viewModel.form) {
+      // viewModel と form が存在するか確認
+      this.subscription$ = this.subscribeOnFormChanges(viewModel);
+      this.render(viewModel.groups);
+    } else {
+      this.subscription$ = Subscription.EMPTY; // サブスクリプションを空にする
+    }
   }
 
-  private render(groups: IBuilderValueGroupViewModel[]): void {
-    this.dispose();
+  private render(groups: IBuilderValueGroupViewModel[] | undefined): void {
+    // this.dispose(); // rebuild の最初で呼ばれるのでここでは不要かも
+    if (!groups) return; // groups がない場合は描画しない
+
     groups.forEach((x) => {
       const groupComponent = this.container.createComponent(
         GroupControlPresentational
@@ -110,12 +124,19 @@ export class FormBuilderDirective
   private subscribeOnFormChanges(
     viewModel: IBuilderValueViewModel
   ): Subscription {
+    // valueChanges は form が生成されてから購読する
     return viewModel.form.valueChanges.subscribe(() => {
-      const value = new ValueToFormValueHandler().handle(
-        new ValueToFormValueRequest(viewModel)
+      // viewModel.form の現在の値から IFormBuilderValue を再計算する必要がある場合が多い
+      // ValueToFormValueHandler が viewModel.form.value を使って変換すると仮定
+      const updatedValue = new ValueToFormValueHandler().handle(
+        new ValueToFormValueRequest(viewModel) // viewModel (内部の form を含む) を渡す
       );
 
-      this.onChange(value);
+      // 内部状態も更新（任意だが、デバッグ等で役立つことも）
+      // this.$internalValue.set(updatedValue); // 注意: これが writeValue を再度トリガーしないようにする
+
+      // 変更をフォームコントロールに通知
+      this.onChange(updatedValue);
       this.onTouch();
     });
   }

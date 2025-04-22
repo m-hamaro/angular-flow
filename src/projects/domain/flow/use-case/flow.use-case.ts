@@ -46,9 +46,7 @@ export class FlowUseCase {
       .get(CreateFlowHandler)
       .handle(new CreateFlowRequest(key, name, flows));
 
-    this.state.flows.update((prev) => {
-      return [...prev, result];
-    });
+    this.state.flows.update((prev) => prev.concat(result));
   }
 
   createNode(

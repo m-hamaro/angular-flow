@@ -63,11 +63,11 @@ import { FormsModule } from '@angular/forms';
 import { WorkflowNodePresentational } from '../node/workflow-node.presentational';
 import { INodeValueModel } from '../../../../domain/flow/interface/i-node-value-model';
 import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
-import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
 import { ChangeNodeHandler } from '../../../domain/node/change/change-node-handler';
 import { ChangeNodeRequest } from '../../../domain/node/change/change-node-request';
 import { ReassignConnectionHandler } from '../../../domain/connection/reassign-connection/reassign-connection-handler';
 import { ReassignConnectionRequest } from '../../../domain/connection/reassign-connection/reassign-connection-request';
+import { CreateConnectionAction } from '../../../../domain/flow/create-connection/create-connection-action';
 
 @Component({
   selector: 'workflow-editor-presentational',
@@ -124,6 +124,8 @@ export class WorkflowEditorPresentational
 
   changeNodePosition = output<ChangeNodePositionAction>();
 
+  createConnection = output<CreateConnectionAction>();
+
   ngOnInit(): void {
     this.subscription$.add(this.subscriptionReloadEvents());
   }
@@ -171,7 +173,6 @@ export class WorkflowEditorPresentational
       point
     );
 
-    // TODO containerへ渡す
     this.changeNodePosition.emit(changeAction);
   }
 
@@ -189,7 +190,9 @@ export class WorkflowEditorPresentational
           event.fInputId
         )
       );
-    this.viewModel.set(view);
+    this.viewModel.set(view.flow);
+
+    this.createConnection.emit(view.action);
 
     // TODO
     // this.cd.detectChanges();

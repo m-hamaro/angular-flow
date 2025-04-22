@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IBuilderValueControlViewModel } from '../../interface/i-builder-value-control-view-model';
 import { MatFormField } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +13,8 @@ import { MatSelectModule } from '@angular/material/select';
   imports: [MatFormField, ReactiveFormsModule, MatOption, MatSelectModule],
 })
 export class OutputsSelectControlPresentational {
-  viewModel = input.required<IBuilderValueControlViewModel>();
+  @Input({ required: true })
+  viewModel!: IBuilderValueControlViewModel;
 
   protected options: { key: number; name: string }[] = [
     {

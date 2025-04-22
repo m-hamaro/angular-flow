@@ -4,9 +4,13 @@ import { FormBuilderModelFromValueResponse } from './form-builder-model-from-val
 import { IBuilderValueGroupViewModel } from '../../interface/i-builder-value-group-view-model';
 import { IFormBuilderValueControl } from '../../interface/external-value/i-form-builder-value-control';
 import { IBuilderValueControlViewModel } from '../../interface/i-builder-value-control-view-model';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class FormBuilderModelFromValueHandler {
-  public handle(
+  handle(
     request: FormBuilderModelFromValueRequest
   ): FormBuilderModelFromValueResponse {
     const form = new FormGroup({});

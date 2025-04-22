@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -11,5 +11,6 @@ import { IBuilderValueControlViewModel } from '../../interface/i-builder-value-c
   imports: [MatFormField, MatInputModule, ReactiveFormsModule],
 })
 export class InputControlPresentational {
-  viewModel = input.required<IBuilderValueControlViewModel>();
+  @Input({ required: true })
+  viewModel!: IBuilderValueControlViewModel;
 }
