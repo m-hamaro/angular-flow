@@ -29,7 +29,7 @@ export class GroupControlPresentational {
       throw new Error(`要素 ${model.name} が見つかりません`);
     }
 
-    this.viewContainer!.clear();
+    this.viewContainer.clear();
 
     model.controls.forEach((control) => {
       const component = this.viewContainer!.createComponent(

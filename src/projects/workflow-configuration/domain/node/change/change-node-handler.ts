@@ -8,14 +8,11 @@ import { INodeViewModel } from '../../../interface/i-node-view-model';
 import { ChangeNodeRequest } from './change-node-request';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
-import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChangeNodeHandler {
-  private readonly flowUseCase = inject(FlowUseCase);
-
   public handle(request: ChangeNodeRequest): {
     flow: IFlowViewModel;
     action: ChangeNodeAction;
@@ -101,7 +98,7 @@ export class ChangeNodeHandler {
 
     if (outputs.length < outputsNumber) {
       for (let i = outputs.length; i < outputsNumber; i++) {
-        outputs.push({ key: `output-${i}`, name: `Output ${i}` });
+        outputs.push({ key: `output-${i + 1}`, name: `Output ${i + 1}` });
       }
     }
     return outputs;

@@ -196,6 +196,7 @@ export class WorkflowEditorPresentational
           event.fInputId
         )
       );
+
     this.viewModel.set(view.flow);
 
     this.createConnection.emit(view.action);
@@ -289,7 +290,6 @@ export class WorkflowEditorPresentational
     this.viewModel.set(view.flow);
 
     this.changeNodeAction.emit(view.action);
-
     this.cd.detectChanges();
 
     // TODO setTimeOut
@@ -387,8 +387,6 @@ export class WorkflowEditorPresentational
       if (res) {
         this.fFlowComponent()?.reset();
       }
-
-      this.cd.detectChanges();
     });
   }
 }

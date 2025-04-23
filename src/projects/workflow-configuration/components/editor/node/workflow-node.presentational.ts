@@ -3,7 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  model,
+  Input,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -24,10 +24,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['workflow-node.presentational.scss'],
   templateUrl: 'workflow-node.presentational.html',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   imports: [FFlowModule, FormBuilderDirective, MatIcon, ReactiveFormsModule],
   host: {
-    '[style.border-top-color]': 'model().color',
+    '[style.border-top-color]': 'model.color',
   },
 })
 export class WorkflowNodePresentational
@@ -35,7 +35,8 @@ export class WorkflowNodePresentational
 {
   private subscription$: Subscription = Subscription.EMPTY;
 
-  model = model.required<INodeViewModel>();
+  @Input({ required: true })
+  public model!: INodeViewModel;
 
   isBodyVisible = signal<boolean>(false);
 
@@ -52,9 +53,9 @@ export class WorkflowNodePresentational
   private readonly cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-    this.form.set(new FormControl(this.model()?.value));
+    this.form.set(new FormControl(this.model?.value));
 
-    this.isBodyVisible.set(this.model()?.isExpanded || false);
+    this.isBodyVisible.set(this.model?.isExpanded || false);
 
     this.subscription$ = this.subscribeToFormChanges();
   }
@@ -63,13 +64,13 @@ export class WorkflowNodePresentational
     return this.form().valueChanges.subscribe((value) => {
       this.valueChange.emit(value);
       setTimeout(() => {
-        this.outputs.set((this.model()?.outputs || []).slice().reverse());
+        this.outputs.set((this.model?.outputs || []).slice().reverse());
       });
     });
   }
 
   ngOnChanges(): void {
-    this.outputs.set((this.model()?.outputs || []).slice().reverse());
+    this.outputs.set((this.model?.outputs || []).slice().reverse());
   }
 
   ngOnDestroy(): void {
@@ -83,12 +84,7 @@ export class WorkflowNodePresentational
   onToggleBodyClick(): void {
     this.isBodyVisible.set(!this.isBodyVisible());
 
-    this.model.update((prev) => {
-      return {
-        ...prev,
-        isExpanded: this.isBodyVisible(),
-      };
-    });
+    this.model.isExpanded = this.isBodyVisible();
 
     this.cd.markForCheck();
   }
