@@ -6,6 +6,7 @@ import { ChangeNodePositionAction } from '../../../../domain/flow/node/change-po
 import { CreateConnectionAction } from '../../../../domain/flow/create-connection/create-connection-action';
 import { BulkRemoveItemsAction } from '../../../../domain/flow/bulk-remove-items/bulk-remove-items-action';
 import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
+import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
 
 @Component({
   selector: 'workflow-editor-container',
@@ -21,6 +22,10 @@ export class WorkFlowEditorContainer {
 
   createNode(action: CreateNodeAction): void {
     this.flowUseCase.createNode(this.flows(), action);
+  }
+
+  changeNode(action: ChangeNodeAction): void {
+    this.flowUseCase.changeNode(this.flows(), action);
   }
 
   nodePositionChanged(action: ChangeNodePositionAction): void {

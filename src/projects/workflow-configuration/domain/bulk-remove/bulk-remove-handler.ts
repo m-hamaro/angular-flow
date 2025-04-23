@@ -10,7 +10,10 @@ import { BulkRemoveItemsAction } from '../../../domain/flow/bulk-remove-items/bu
 export class BulkRemoveHandler {
   constructor() {}
 
-  handle(request: BulkRemoveRequest): IFlowViewModel {
+  handle(request: BulkRemoveRequest): {
+    flow: IFlowViewModel;
+    action: BulkRemoveItemsAction;
+  } {
     const connectionKeys: string[] = request.connectionKeys || [];
 
     request.nodeKeys.forEach((x) => {
@@ -36,7 +39,10 @@ export class BulkRemoveHandler {
       outputKeys
     );
 
-    return result;
+    return {
+      flow: result,
+      action,
+    };
   }
 
   private findAllConnectionsForNode(

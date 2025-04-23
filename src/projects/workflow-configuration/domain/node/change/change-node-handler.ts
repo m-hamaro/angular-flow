@@ -16,7 +16,10 @@ import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 export class ChangeNodeHandler {
   private readonly flowUseCase = inject(FlowUseCase);
 
-  public handle(request: ChangeNodeRequest): IFlowViewModel {
+  public handle(request: ChangeNodeRequest): {
+    flow: IFlowViewModel;
+    action: ChangeNodeAction;
+  } {
     const flow = JSON.parse(JSON.stringify(request.flow));
 
     const index = flow.nodes.findIndex(
@@ -58,11 +61,10 @@ export class ChangeNodeHandler {
       node.value
     );
 
-    const flows = this.flowUseCase.state.flows();
-
-    this.flowUseCase.changeNode(flows, action);
-
-    return flow;
+    return {
+      flow,
+      action,
+    };
   }
 
   private findOutputsNumberValue(

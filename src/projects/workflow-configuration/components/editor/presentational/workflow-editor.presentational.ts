@@ -68,6 +68,8 @@ import { ChangeNodeRequest } from '../../../domain/node/change/change-node-reque
 import { ReassignConnectionHandler } from '../../../domain/connection/reassign-connection/reassign-connection-handler';
 import { ReassignConnectionRequest } from '../../../domain/connection/reassign-connection/reassign-connection-request';
 import { CreateConnectionAction } from '../../../../domain/flow/create-connection/create-connection-action';
+import { ChangeNodeAction } from '../../../../domain/flow/node/change/change-node-action';
+import { BulkRemoveItemsAction } from '../../../../domain/flow/bulk-remove-items/bulk-remove-items-action';
 
 @Component({
   selector: 'workflow-editor-presentational',
@@ -125,6 +127,10 @@ export class WorkflowEditorPresentational
   changeNodePosition = output<ChangeNodePositionAction>();
 
   createConnection = output<CreateConnectionAction>();
+
+  changeNodeAction = output<ChangeNodeAction>();
+
+  removeConnectionAction = output<BulkRemoveItemsAction>();
 
   ngOnInit(): void {
     this.subscription$.add(this.subscriptionReloadEvents());
@@ -201,6 +207,7 @@ export class WorkflowEditorPresentational
   onActionPanelEvent(event: FlowActionPanelEventType): void {
     switch (event) {
       case FlowActionPanelEventType.TEST_CALL:
+        // TODO
         break;
 
       case FlowActionPanelEventType.DELETE_SELECTED:
@@ -261,7 +268,9 @@ export class WorkflowEditorPresentational
       .get(BulkRemoveHandler)
       .handle(new BulkRemoveRequest(this.viewModel()!, [], [connection.key]));
 
-    this.viewModel.set(view);
+    this.viewModel.set(view.flow);
+
+    this.removeConnectionAction.emit(view.action);
   }
 
   onValueChanged(node: INodeViewModel, value: INodeValueModel): void {
@@ -277,10 +286,16 @@ export class WorkflowEditorPresentational
       .get(ChangeNodeHandler)
       .handle(new ChangeNodeRequest(this.viewModel()!, node));
 
-    this.viewModel.set(view);
+    this.viewModel.set(view.flow);
+
+    this.changeNodeAction.emit(view.action);
+
+    this.cd.detectChanges();
 
     // TODO setTimeOut
-    this.fFlowComponent()?.select(selected.fNodeIds, selected.fConnectionIds);
+    setTimeout(() => {
+      this.fFlowComponent()?.select(selected.fNodeIds, selected.fConnectionIds);
+    });
   }
 
   onRemoveItems(): void {
@@ -299,7 +314,9 @@ export class WorkflowEditorPresentational
           selection.fConnectionIds
         )
       );
-    this.viewModel.set(view);
+    this.viewModel.set(view.flow);
+
+    this.removeConnectionAction.emit(view.action);
 
     // TODO いるかも
     // this.cd.detectChanges();
