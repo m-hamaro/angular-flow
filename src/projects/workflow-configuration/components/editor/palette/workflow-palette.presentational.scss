@@ -25,11 +25,11 @@ button {
   background-color: var(--gray14);
 
   &:hover {
-    background-color: var(--gray13) !important;
+    background-color: var(--gray12) !important;
   }
 
   &.f-external-item-disabled {
-    background-color: var(--gray13) !important;
+    background-color: var(--gray10) !important;
     cursor: unset;
   }
 }
