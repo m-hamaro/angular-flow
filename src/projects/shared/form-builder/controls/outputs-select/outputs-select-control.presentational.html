@@ -1,14 +1,12 @@
 @if (viewModel) {
-<div class="form-field-design">
-  <mat-form-field>
-    <mat-select
-      [placeholder]="viewModel.name"
-      [formControl]="viewModel.formControl"
-    >
-      @for (option of options; track option) {
-      <mat-option [value]="option.key">{{ option.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-</div>
+<mat-form-field class="form-field-design">
+  <mat-select
+    [placeholder]="viewModel.name"
+    [formControl]="viewModel.formControl"
+  >
+    @for (option of options; track option) {
+    <mat-option [value]="option.key">{{ option.name }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
 }

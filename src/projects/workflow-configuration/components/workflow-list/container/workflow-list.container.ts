@@ -40,6 +40,7 @@ export class WorkflowListContainer {
 
   openUpdateFlowItemDialog(entity: IEntitySummary<string>) {
     this.dialog.open(UpdateWorkflowItemDialog, {
+      width: '400px',
       data: entity,
     });
   }

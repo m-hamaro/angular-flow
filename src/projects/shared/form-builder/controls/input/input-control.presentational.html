@@ -1,14 +1,12 @@
 @if (viewModel) {
-<div class="form-field-design">
-  <mat-form-field>
-    <input
-      matInput
-      [placeholder]="viewModel.name"
-      [formControl]="viewModel.formControl"
-    />
-    @if (viewModel.formControl.hasError('required')) {
-    <mat-error>必須項目です</mat-error>
-    }
-  </mat-form-field>
-</div>
+<mat-form-field class="form-field-design">
+  <input
+    matInput
+    [placeholder]="viewModel.name"
+    [formControl]="viewModel.formControl"
+  />
+  @if (viewModel.formControl.hasError('required')) {
+  <mat-error>必須項目です</mat-error>
+  }
+</mat-form-field>
 }
