@@ -1,4 +1,4 @@
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { FormBuilderModelFromValueRequest } from './form-builder-model-from-value-request';
 import { FormBuilderModelFromValueResponse } from './form-builder-model-from-value-response';
 import { IBuilderValueGroupViewModel } from '../../interface/i-builder-value-group-view-model';
@@ -29,18 +29,27 @@ export class FormBuilderModelFromValueHandler {
 
     return result;
   }
+
   private mapControlModelToFormControl(
     controls: IFormBuilderValueControl[],
     form: FormGroup
   ): IBuilderValueControlViewModel[] {
-    const result = controls.map((controlModel) => {
-      const formControl = new FormControl(controlModel.value);
-      form.addControl(controlModel.key, formControl);
-      return {
-        ...controlModel,
-        formControl,
-      };
-    });
+    const result = controls.map(
+      (controlModel: IFormBuilderValueControl<any>) => {
+        const validations: ValidatorFn[] = controlModel?.validators
+          ? controlModel.validators
+          : [];
+
+        const formControl = new FormControl(controlModel.value, validations);
+
+        form.addControl(controlModel.key, formControl);
+
+        return {
+          ...controlModel,
+          formControl,
+        };
+      }
+    );
 
     return result;
   }

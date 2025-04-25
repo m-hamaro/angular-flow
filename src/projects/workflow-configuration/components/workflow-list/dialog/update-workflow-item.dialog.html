@@ -1,0 +1,10 @@
+<div mat-dialog-title>Dialog with elements</div>
+<mat-dialog-content>
+  <form [formGroup]="formGroup">
+    <div formBuilder [formControl]="form"></div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>閉じる</button>
+  <button mat-button [disabled]="formGroup.invalid">変更</button>
+</mat-dialog-actions>

@@ -1,3 +1,4 @@
+import { ValidatorFn } from '@angular/forms';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 
 export interface IFormBuilderValueControl<TValue = any> {
@@ -8,4 +9,6 @@ export interface IFormBuilderValueControl<TValue = any> {
   type: FormBuilderControlType;
 
   value?: TValue;
+
+  validators?: ValidatorFn[];
 }

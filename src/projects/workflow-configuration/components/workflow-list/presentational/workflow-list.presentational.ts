@@ -66,6 +66,8 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
 
   onRemoveFlow = output<RemoveFlowAction>();
 
+  onOpenWorkflowUpdateItemDialog = output<IEntitySummary<string>>();
+
   ngOnInit(): void {
     this.subscription$.add(this.subscribeOnRouteChanges());
   }
@@ -91,6 +93,10 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
     const action = new RemoveFlowAction(entity.key);
 
     this.onRemoveFlow.emit(action);
+  }
+
+  onUpdate(entity: IEntitySummary<string>) {
+    this.onOpenWorkflowUpdateItemDialog.emit(entity);
   }
 
   private subscribeOnRouteChanges(): Subscription {

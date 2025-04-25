@@ -4,6 +4,9 @@ import { CreateFlowAction } from '../../../../domain/flow/create/create-flow-act
 import { FlowUseCase } from '../../../../domain/flow/use-case/flow.use-case';
 import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
 import { Router } from '@angular/router';
+import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
+import { MatDialog } from '@angular/material/dialog';
+import { UpdateWorkflowItemDialog } from '../dialog/update-workflow-item.dialog';
 
 @Component({
   selector: 'workflow-list-container',
@@ -16,6 +19,8 @@ export class WorkflowListContainer {
   private readonly router = inject(Router);
 
   readonly flowUseCase = inject(FlowUseCase);
+
+  private readonly dialog = inject(MatDialog);
 
   private readonly flows = computed(() => this.flowUseCase.state.flows());
 
@@ -31,5 +36,11 @@ export class WorkflowListContainer {
     } else {
       this.router.navigateByUrl(`/flow`);
     }
+  }
+
+  openUpdateFlowItemDialog(entity: IEntitySummary<string>) {
+    this.dialog.open(UpdateWorkflowItemDialog, {
+      data: entity,
+    });
   }
 }

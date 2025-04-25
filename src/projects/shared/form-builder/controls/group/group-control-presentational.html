@@ -1,5 +1,5 @@
 @if (viewModel()?.name) {
-<div class="f-group-name">{{ viewModel()?.name }}</div>
+<div class="f-group-name text-xs">{{ viewModel()?.name ?? '' }}</div>
 }
 <div class="f-group-content">
   <ng-container #containerRef></ng-container>

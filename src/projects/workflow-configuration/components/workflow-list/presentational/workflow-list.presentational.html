@@ -1,4 +1,4 @@
-<header>
+<header class="flex items-center justify-between">
   <input
     class="toolbar-search"
     [formControl]="searchControl()"
@@ -10,12 +10,13 @@
 <div class="list">
   @for (item of flows() ;track item.key) {
   <div
-    class="explorer-panel-item"
+    class="explorer-panel-item flex justify-start cursor-pointer items-center !pl-3 w-full outline-none border border-transparent bg-transparent h-7 min-h-7"
     [routerLink]="item.key"
     routerLinkActive="active"
   >
-    <span>{{ item.name }}</span>
+    <span class="truncate">{{ item.name }}</span>
     <div class="flex-space"></div>
+    <button icon-button (click)="onUpdate(item)">edit</button>
     <button icon-button (click)="onDelete(item, $event)">delete</button>
   </div>
   }
