@@ -1,12 +1,12 @@
 import { inject, Injectable, Injector } from '@angular/core';
 import { IFlowModel } from '../../interface/i-flow-model';
 import { INodeModel } from '../../interface/i-node-model';
-import { CreateConversationNodeHandler } from '../create-conversation-node/create-conversation-node-handler';
-import { CreateConversationNodeRequest } from '../create-conversation-node/create-conversation-node-request';
-import { CreateDisconnectNodeHandler } from '../create-disconnect-node/create-disconnect-node-handler';
-import { CreateDisconnectNodeRequest } from '../create-disconnect-node/create-disconnect-node-request';
-import { CreateIncomingCallNodeHandler } from '../create-incoming-call-node/create-incoming-call-node-handler';
-import { CreateIncomingCallNodeRequest } from '../create-incoming-call-node/create-incoming-call-node-request';
+import { CreateWebSearchNodeHandler } from '../create-web-search-node/create-web-search-node-handler';
+import { CreateWebSearchNodeRequest } from '../create-web-search-node/create-web-search-node-request';
+import { CreateCloseNodeHandler } from '../create-close-node/create-close-node-handler';
+import { CreateCloseNodeRequest } from '../create-close-node/create-close-node-request';
+import { CreateStartNodeHandler } from '../create-start-node/create-start-node-handler';
+import { CreateStartNodeRequest } from '../create-start-node/create-start-node-request';
 import { CreatePlayTextNodeHandler } from '../create-play-text-node/create-play-text-node-handler';
 import { CreatePlayTextNodeRequest } from '../create-play-text-node/create-play-text-node-request';
 import { CreateNodeRequest } from './create-node-request';
@@ -35,10 +35,10 @@ export class CreateNodeHandler {
 
   private getNodeModel(request: CreateNodeRequest): INodeModel {
     switch (request.type) {
-      case NodeType.IncomingCall:
+      case NodeType.Start:
         return this.injector
-          .get(CreateIncomingCallNodeHandler)
-          .handle(new CreateIncomingCallNodeRequest(request.position));
+          .get(CreateStartNodeHandler)
+          .handle(new CreateStartNodeRequest(request.position));
 
       case NodeType.PlayText:
         return this.injector
@@ -50,15 +50,15 @@ export class CreateNodeHandler {
           .get(CreateIvrNodeHandler)
           .handle(new CreateIvrNodeRequest(request.position));
 
-      case NodeType.ToOperator:
+      case NodeType.WebSearch:
         return this.injector
-          .get(CreateConversationNodeHandler)
-          .handle(new CreateConversationNodeRequest(request.position));
+          .get(CreateWebSearchNodeHandler)
+          .handle(new CreateWebSearchNodeRequest(request.position));
 
-      case NodeType.Disconnect:
+      case NodeType.Close:
         return this.injector
-          .get(CreateDisconnectNodeHandler)
-          .handle(new CreateDisconnectNodeRequest(request.position));
+          .get(CreateCloseNodeHandler)
+          .handle(new CreateCloseNodeRequest(request.position));
 
       default:
         throw new Error('Unknown node type');

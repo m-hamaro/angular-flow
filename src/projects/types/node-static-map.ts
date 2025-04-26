@@ -2,9 +2,9 @@ import { INodeStaticMapItem } from '../workflow-configuration/interface/i-node-s
 import { NodeType } from './node-type';
 
 export const NODE_STATIC_MAP: IMap<INodeStaticMapItem> = {
-  [NodeType.IncomingCall]: {
-    name: 'Incoming call',
-    icon: 'add_call',
+  [NodeType.Start]: {
+    name: '開始',
+    icon: 'play_arrow',
     color: '#39b372',
     isExpandable: false,
   },
@@ -15,20 +15,20 @@ export const NODE_STATIC_MAP: IMap<INodeStaticMapItem> = {
     isExpandable: true,
   },
   [NodeType.PlayText]: {
-    name: 'Play text',
-    icon: 'wifi_calling_3',
+    name: '会話',
+    icon: 'chat',
     color: '#AF94FF',
     isExpandable: true,
   },
-  [NodeType.ToOperator]: {
-    name: 'To operator',
-    icon: 'wifi_calling_3',
+  [NodeType.WebSearch]: {
+    name: 'ウェブ検索',
+    icon: 'language',
     color: '#ffb62a',
     isExpandable: false,
   },
-  [NodeType.Disconnect]: {
-    name: 'Disconnect',
-    icon: 'phone_disabled',
+  [NodeType.Close]: {
+    name: '終了',
+    icon: 'square_dot',
     color: '#ff859b',
     isExpandable: false,
   },

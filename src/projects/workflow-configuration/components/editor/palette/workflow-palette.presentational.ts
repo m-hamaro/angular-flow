@@ -37,9 +37,9 @@ export class WorkflowPalettePresentational implements OnChanges {
 
   private limitNodes(): void {
     this.nodes.forEach((x) => {
-      if (x.type === NodeType.IncomingCall) {
+      if (x.type === NodeType.Start) {
         x.disabled = !!this.viewModel()?.nodes.some(
-          (y) => y.type === NodeType.IncomingCall
+          (y) => y.type === NodeType.Start
         );
       }
     });

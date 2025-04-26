@@ -19,7 +19,7 @@ export class ChangeNodeHandler {
   } {
     const flow = JSON.parse(JSON.stringify(request.flow));
 
-    const index = flow.nodes.findIndex(
+    const index: number = flow.nodes.findIndex(
       (x: INodeViewModel) => x.key === request.node.key
     );
 

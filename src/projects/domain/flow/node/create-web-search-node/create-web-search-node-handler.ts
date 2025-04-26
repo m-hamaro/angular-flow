@@ -1,23 +1,28 @@
 import { Injectable } from '@angular/core';
+import { CreateWebSearchNodeRequest } from './create-web-search-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
-import { CreateDisconnectNodeRequest } from './create-disconnect-node-request';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CreateDisconnectNodeHandler {
-  handle(request: CreateDisconnectNodeRequest): INodeModel {
+export class CreateWebSearchNodeHandler {
+  handle(request: CreateWebSearchNodeRequest): INodeModel {
     return {
       key: crypto.randomUUID(),
 
       input: `${crypto.randomUUID()}_input`,
 
-      outputs: [],
+      outputs: [
+        {
+          key: crypto.randomUUID(),
+          name: 'Call Ended',
+        },
+      ],
 
       position: request.position,
 
-      type: NodeType.Disconnect,
+      type: NodeType.WebSearch,
 
       value: null,
     };

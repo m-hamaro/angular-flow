@@ -1,11 +1,11 @@
 export enum NodeType {
-  IncomingCall = 'incoming-call',
+  Start = 'start',
 
   PlayText = 'play-text',
 
   UserInput = 'user-input',
 
-  ToOperator = 'to-operator',
+  WebSearch = 'web-search',
 
-  Disconnect = 'disconnect',
+  Close = 'close',
 }

@@ -1,28 +1,26 @@
 import { Injectable } from '@angular/core';
-import { CreateConversationNodeRequest } from './create-conversation-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
+import { CreateStartNodeRequest } from './create-start-node-request';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CreateConversationNodeHandler {
-  handle(request: CreateConversationNodeRequest): INodeModel {
+export class CreateStartNodeHandler {
+  handle(request: CreateStartNodeRequest): INodeModel {
     return {
       key: crypto.randomUUID(),
-
-      input: `${crypto.randomUUID()}_input`,
 
       outputs: [
         {
           key: crypto.randomUUID(),
-          name: 'Call Ended',
+          name: '',
         },
       ],
 
       position: request.position,
 
-      type: NodeType.ToOperator,
+      type: NodeType.Start,
 
       value: null,
     };

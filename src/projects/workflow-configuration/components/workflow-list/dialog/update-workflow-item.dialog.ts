@@ -1,29 +1,25 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  forwardRef,
   Inject,
   inject,
-  OnInit,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
 import {
   FormGroup,
   FormsModule,
-  NG_VALUE_ACCESSOR,
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { FormBuilderDirective } from '../../../../shared/form-builder/form-builder.directive';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-interface UpdateWorkFlowItemForm {
-  name: string;
-}
 
 @Component({
   selector: 'update-workflow-item-dialog',
@@ -39,20 +35,15 @@ interface UpdateWorkFlowItemForm {
     MatInputModule,
     MatFormFieldModule,
   ],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FormBuilderDirective),
-      multi: true,
-    },
-  ],
 })
-export class UpdateWorkflowItemDialog implements OnInit {
+export class UpdateWorkflowItemDialog {
   private readonly fb = inject(NonNullableFormBuilder);
 
   formGroup!: FormGroup;
 
   constructor(
+    private dialogRef: MatDialogRef<UpdateWorkflowItemDialog>,
+
     @Inject(MAT_DIALOG_DATA)
     public data: IEntitySummary<string>
   ) {
@@ -61,5 +52,20 @@ export class UpdateWorkflowItemDialog implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  onChangeFlow() {
+    const key = this.data.key;
+
+    const newName = this.formGroup.get('name')?.value;
+
+    if (!key || !newName) {
+      return;
+    }
+
+    const updateData: IEntitySummary<string> = {
+      key: key,
+      name: newName,
+    };
+
+    this.dialogRef.close(updateData);
+  }
 }

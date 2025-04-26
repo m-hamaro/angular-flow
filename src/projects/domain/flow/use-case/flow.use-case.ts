@@ -21,6 +21,9 @@ import { RemoveFlowAction } from '../remove/remove-flow-action';
 import { ChangeNodePositionAction } from '../node/change-position/change-node-position-action';
 import { ChangeNodePositionHandler } from '../node/change-position/change-node-position-handler';
 import { ChangeNodePositionRequest } from '../node/change-position/change-node-position-request';
+import { UpdateFlowAction } from '../update/update-flow-action';
+import { UpdateFlowHandler } from '../update/update-flow-handler';
+import { UpdateFlowRequest } from '../update/update-flow-request';
 
 @Injectable({
   providedIn: 'root',
@@ -41,12 +44,22 @@ export class FlowUseCase {
     });
   }
 
-  create(flows: IFlowModel[], { key, name }: CreateFlowAction): void {
+  create(flows: IFlowModel[], { key, name }: CreateFlowAction): string {
     const result: IFlowModel = this.injector
       .get(CreateFlowHandler)
       .handle(new CreateFlowRequest(key, name, flows));
 
     this.state.flows.update((prev) => prev.concat(result));
+
+    return key;
+  }
+
+  update(flows: IFlowModel[], { key, name }: UpdateFlowAction): void {
+    const result: IFlowModel[] = this.injector
+      .get(UpdateFlowHandler)
+      .handle(new UpdateFlowRequest(key, name, flows));
+
+    this.state.flows.set(result);
   }
 
   createNode(

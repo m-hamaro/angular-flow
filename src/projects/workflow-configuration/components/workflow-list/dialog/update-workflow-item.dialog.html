@@ -12,5 +12,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button mat-dialog-close>閉じる</button>
-  <button mat-button [disabled]="formGroup.invalid">変更</button>
+  <button mat-button [disabled]="formGroup.invalid" (click)="onChangeFlow()">
+    変更
+  </button>
 </mat-dialog-actions>

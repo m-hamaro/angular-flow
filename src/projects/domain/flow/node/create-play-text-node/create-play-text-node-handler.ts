@@ -28,17 +28,17 @@ export class CreatePlayTextNodeHandler {
       value: {
         groups: [
           {
-            name: `Text to Play`,
+            name: `質問内容`,
 
             controls: [
               {
                 key: crypto.randomUUID(),
 
-                name: `Text to Play`,
+                name: `ここに内容を入力`,
 
                 type: FormBuilderControlType.TEXTAREA,
 
-                value: `Please enter the text to play`,
+                value: ``,
               },
             ],
           },

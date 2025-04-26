@@ -1,11 +1,10 @@
 import { inject, Injectable, Injector } from '@angular/core';
 import { CreateFlowRequest } from './create-flow-request';
 import { IFlowModel } from '../interface/i-flow-model';
-import { CreateIncomingCallNodeHandler } from '../node/create-incoming-call-node/create-incoming-call-node-handler';
-import { CreateIncomingCallNodeRequest } from '../node/create-incoming-call-node/create-incoming-call-node-request';
-import { CreateDisconnectNodeHandler } from '../node/create-disconnect-node/create-disconnect-node-handler';
-import { CreateDisconnectNodeRequest } from '../node/create-disconnect-node/create-disconnect-node-request';
-import { throwError } from 'rxjs';
+import { CreateStartNodeHandler } from '../node/create-start-node/create-start-node-handler';
+import { CreateStartNodeRequest } from '../node/create-start-node/create-start-node-request';
+import { CreateCloseNodeHandler } from '../node/create-close-node/create-close-node-handler';
+import { CreateCloseNodeRequest } from '../node/create-close-node/create-close-node-request';
 
 @Injectable({
   providedIn: 'root',
@@ -15,37 +14,37 @@ export class CreateFlowHandler {
 
   handle(request: CreateFlowRequest): IFlowModel {
     const existingFlow: IFlowModel | undefined = request.flows.find(
-      (x) => x.name === request.name
+      (x) => x.key === request.key
     );
 
     if (existingFlow) {
-      throwError(() => new Error('そのフローは既に登録されています'));
+      throw new Error('そのフローは既に登録されています');
     }
 
-    const height = window.innerHeight;
+    const height: number = window.innerHeight;
 
-    const width = window.innerWidth;
+    const width: number = window.innerWidth;
 
-    const incomingCallNode = this.injector
-      .get(CreateIncomingCallNodeHandler)
+    const startNode = this.injector
+      .get(CreateStartNodeHandler)
       .handle(
-        new CreateIncomingCallNodeRequest({ x: width / 2, y: (height / 8) * 2 })
+        new CreateStartNodeRequest({ x: width / 2, y: (height / 8) * 2 })
       );
 
-    const disconnectNode = this.injector
-      .get(CreateDisconnectNodeHandler)
+    const closeNode = this.injector
+      .get(CreateCloseNodeHandler)
       .handle(
-        new CreateDisconnectNodeRequest({ x: width / 2, y: (height / 8) * 6 })
+        new CreateCloseNodeRequest({ x: width / 2, y: (height / 8) * 6 })
       );
 
-    if (incomingCallNode.outputs.length) {
-      incomingCallNode.outputs[0].connectedTo = disconnectNode.input;
+    if (startNode.outputs.length) {
+      startNode.outputs[0].connectedTo = closeNode.input;
     }
 
     return {
       key: request.key,
       name: request.name,
-      nodes: [incomingCallNode, disconnectNode],
+      nodes: [startNode, closeNode],
     };
   }
 }
