@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,6 +5,6 @@ import { Component } from '@angular/core';
   styleUrls: ['app-header.presentational.scss'],
   templateUrl: 'app-header.presentational.html',
   standalone: true,
-  imports: [NgOptimizedImage],
+  imports: [],
 })
 export class AppHeaderPresentational {}

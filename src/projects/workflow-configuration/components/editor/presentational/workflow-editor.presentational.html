@@ -1,6 +1,12 @@
 @if (viewModel()) {
-<workflow-action-panel-presentational (request)="onActionPanelEvent($event)" />
-<workflow-palette-presentational [viewModel]="viewModel()!" />
+<workflow-action-panel-presentational
+  (request)="onActionPanelEvent($event)"
+  class="flex flex-wrap"
+/>
+<workflow-palette-presentational
+  [viewModel]="viewModel()!"
+  class="flex flex-wrap"
+/>
 
 <f-flow
   fDraggable
