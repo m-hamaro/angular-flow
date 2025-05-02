@@ -8,6 +8,7 @@ import { INodeViewModel } from '../../../interface/i-node-view-model';
 import { ChangeNodeRequest } from './change-node-request';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
+import { NodeType } from '../../../../types/node-type';
 
 @Injectable({
   providedIn: 'root',
@@ -25,15 +26,28 @@ export class ChangeNodeHandler {
 
     flow.nodes[index] = request.node;
 
-    const outputsNumberValue = this.findOutputsNumberValue(
-      flow.nodes[index].value
-    );
-    if (outputsNumberValue) {
-      flow.nodes[index].outputs = this.mergeOutputsWithNumber(
-        flow,
-        flow.nodes[index],
-        outputsNumberValue
-      );
+    if (request.node.type === NodeType.UserInput) {
+      const outputsNumberValue: number | undefined =
+        this.findOutputsNumberValue(flow.nodes[index].value);
+
+      if (outputsNumberValue) {
+        flow.nodes[index].outputs = this.mergeOutputsWithNumber(
+          flow,
+          flow.nodes[index],
+          outputsNumberValue
+        );
+      }
+    }
+
+    if (request.node.type === NodeType.Knowledge) {
+      const outputsKnowledgeValue: IEntitySummary<string> | null =
+        this.findOutputsKnowledgeValue(flow.nodes[index].value);
+
+      if (outputsKnowledgeValue) {
+        flow.nodes[index].outputs = this.changeOutputsWithKnowledge(
+          outputsKnowledgeValue
+        );
+      }
     }
 
     const node = flow.nodes[index];
@@ -102,5 +116,31 @@ export class ChangeNodeHandler {
       }
     }
     return outputs;
+  }
+
+  private findOutputsKnowledgeValue(
+    value: INodeValueModel | null
+  ): IEntitySummary<string> | null {
+    const group = value?.groups.find((x) =>
+      x.controls.some((control) => {
+        return control.type === FormBuilderControlType.KNOWLEDGE_SELECT;
+      })
+    );
+
+    if (group) {
+      const control = group.controls.find(
+        (x) => x.type === FormBuilderControlType.KNOWLEDGE_SELECT
+      );
+
+      return control?.value ?? null;
+    }
+
+    return null;
+  }
+
+  private changeOutputsWithKnowledge(
+    outputsKnowledge: IEntitySummary<string>
+  ): IEntitySummary<string>[] {
+    return [outputsKnowledge];
   }
 }

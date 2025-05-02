@@ -3,5 +3,7 @@ export enum FormBuilderControlType {
 
   OUTPUTS_SELECT = 'OUTPUTS_SELECT',
 
+  KNOWLEDGE_SELECT = 'KNOWLEDGE_SELECT',
+
   TEXTAREA = 'TEXTAREA',
 }

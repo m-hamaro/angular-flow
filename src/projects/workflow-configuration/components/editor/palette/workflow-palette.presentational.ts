@@ -3,7 +3,6 @@ import {
   Component,
   input,
   OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import { IFlowViewModel } from '../../../interface/i-flow-view-model';
 import { NODE_STATIC_MAP } from '../../../../types/node-static-map';

@@ -7,5 +7,7 @@ export enum NodeType {
 
   WebSearch = 'web-search',
 
+  Knowledge = 'knowledge',
+
   Close = 'close',
 }

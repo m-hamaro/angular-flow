@@ -26,6 +26,12 @@ export const NODE_STATIC_MAP: IMap<INodeStaticMapItem> = {
     color: '#ffb62a',
     isExpandable: false,
   },
+  [NodeType.Knowledge]: {
+    name: '独自AI',
+    icon: 'import_contacts',
+    color: '#008000',
+    isExpandable: true,
+  },
   [NodeType.Close]: {
     name: '終了',
     icon: 'square_dot',

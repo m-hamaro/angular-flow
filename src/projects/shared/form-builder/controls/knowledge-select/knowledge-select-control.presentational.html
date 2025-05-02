@@ -1,0 +1,12 @@
+@if (viewModel) {
+<mat-form-field class="form-field-design">
+  <mat-select
+    [placeholder]="viewModel.name"
+    [formControl]="viewModel.formControl"
+  >
+    @for (knowledge of knowledgeList; track $index) {
+    <mat-option [value]="knowledge">{{knowledge.name}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+}

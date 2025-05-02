@@ -132,9 +132,6 @@ export class FormBuilderDirective
         new ValueToFormValueRequest(viewModel) // viewModel (内部の form を含む) を渡す
       );
 
-      // 内部状態も更新（任意だが、デバッグ等で役立つことも）
-      // this.$internalValue.set(updatedValue); // 注意: これが writeValue を再度トリガーしないようにする
-
       // 変更をフォームコントロールに通知
       this.onChange(updatedValue);
       this.onTouch();

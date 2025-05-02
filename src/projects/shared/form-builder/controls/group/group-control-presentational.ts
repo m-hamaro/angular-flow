@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { IBuilderValueGroupViewModel } from '../../interface/i-builder-value-group-view-model';
 import { FORM_BUILDER_CONTROL_MAP } from '../../interface/form-builder-control-map';
+import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 
 @Component({
   selector: 'group-control',
@@ -36,6 +37,19 @@ export class GroupControlPresentational {
         FORM_BUILDER_CONTROL_MAP[control.type]
       );
       component.instance.viewModel = control;
+
+      if (control.type === FormBuilderControlType.KNOWLEDGE_SELECT) {
+        component.instance.knowledgeList = [
+          {
+            key: crypto.randomUUID(),
+            name: '独自AI1',
+          },
+          {
+            key: crypto.randomUUID(),
+            name: '独自AI2',
+          },
+        ];
+      }
     });
   }
 }

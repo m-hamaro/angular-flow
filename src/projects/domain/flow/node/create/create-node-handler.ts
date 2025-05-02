@@ -13,6 +13,8 @@ import { CreateNodeRequest } from './create-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { CreateIvrNodeHandler } from '../create-ivr-node/create-ivr-node-handler';
 import { CreateIvrNodeRequest } from '../create-ivr-node/create-ivr-node-request';
+import { CreateKnowledgeNodeHandler } from '../create-knowledge-node/create-knowledge-node-handler';
+import { CreateKnowledgeNodeRequest } from '../create-knowledge-node/create-knowledge-node-request';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +51,11 @@ export class CreateNodeHandler {
         return this.injector
           .get(CreateIvrNodeHandler)
           .handle(new CreateIvrNodeRequest(request.position));
+
+      case NodeType.Knowledge:
+        return this.injector
+          .get(CreateKnowledgeNodeHandler)
+          .handle(new CreateKnowledgeNodeRequest(request.position));
 
       case NodeType.WebSearch:
         return this.injector
