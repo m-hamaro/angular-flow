@@ -45,6 +45,8 @@ export class ChangeNodeHandler {
 
       if (outputsKnowledgeValue) {
         flow.nodes[index].outputs = this.changeOutputsWithKnowledge(
+          flow,
+          flow.nodes[index],
           outputsKnowledgeValue
         );
       }
@@ -139,8 +141,18 @@ export class ChangeNodeHandler {
   }
 
   private changeOutputsWithKnowledge(
+    flow: IFlowViewModel,
+    node: INodeViewModel,
     outputsKnowledge: IEntitySummary<string>
   ): IEntitySummary<string>[] {
+    const outputsToRemove = node.outputs;
+
+    outputsToRemove.forEach((x) => {
+      flow.connections = flow.connections.filter((connection) => {
+        return connection.from !== x.key;
+      });
+    });
+
     return [outputsKnowledge];
   }
 }
