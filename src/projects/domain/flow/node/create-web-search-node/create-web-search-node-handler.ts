@@ -16,7 +16,7 @@ export class CreateWebSearchNodeHandler {
       outputs: [
         {
           key: crypto.randomUUID(),
-          name: 'Call Ended',
+          name: 'ウェブ検索結果',
         },
       ],
 

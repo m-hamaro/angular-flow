@@ -17,7 +17,7 @@ export class CreatePlayTextNodeHandler {
       outputs: [
         {
           key: crypto.randomUUID(),
-          name: `出力`,
+          name: `質問文`,
         },
       ],
 

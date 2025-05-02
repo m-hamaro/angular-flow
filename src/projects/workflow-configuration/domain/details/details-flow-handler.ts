@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 export class DetailsFlowHandler {
   private readonly router = inject(Router);
 
-  // TODO
   handle(flows: IFlowModel[], request: DetailsFlowRequest): IFlowViewModel {
     const flow = this.getFlow(flows, request.key);
     const result = new MapToFlowViewModelHandler().handle(
