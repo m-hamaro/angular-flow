@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
-import { CreateCloseNodeRequest } from './create-close-node-request';
+import { CreateEndNodeRequest } from './create-end-node-request';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CreateCloseNodeHandler {
-  handle(request: CreateCloseNodeRequest): INodeModel {
+export class CreateEndNodeHandler {
+  handle(request: CreateEndNodeRequest): INodeModel {
     return {
       key: crypto.randomUUID(),
 
@@ -17,7 +17,7 @@ export class CreateCloseNodeHandler {
 
       position: request.position,
 
-      type: NodeType.Close,
+      type: NodeType.End,
 
       value: null,
     };

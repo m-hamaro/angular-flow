@@ -9,5 +9,5 @@ export enum NodeType {
 
   Knowledge = 'knowledge',
 
-  Close = 'close',
+  End = 'end',
 }

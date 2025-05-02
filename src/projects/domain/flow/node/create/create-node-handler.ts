@@ -3,8 +3,8 @@ import { IFlowModel } from '../../interface/i-flow-model';
 import { INodeModel } from '../../interface/i-node-model';
 import { CreateWebSearchNodeHandler } from '../create-web-search-node/create-web-search-node-handler';
 import { CreateWebSearchNodeRequest } from '../create-web-search-node/create-web-search-node-request';
-import { CreateCloseNodeHandler } from '../create-close-node/create-close-node-handler';
-import { CreateCloseNodeRequest } from '../create-close-node/create-close-node-request';
+import { CreateEndNodeHandler } from '../create-end-node/create-end-node-handler';
+import { CreateEndNodeRequest } from '../create-end-node/create-end-node-request';
 import { CreateStartNodeHandler } from '../create-start-node/create-start-node-handler';
 import { CreateStartNodeRequest } from '../create-start-node/create-start-node-request';
 import { CreatePlayTextNodeHandler } from '../create-play-text-node/create-play-text-node-handler';
@@ -62,10 +62,10 @@ export class CreateNodeHandler {
           .get(CreateWebSearchNodeHandler)
           .handle(new CreateWebSearchNodeRequest(request.position));
 
-      case NodeType.Close:
+      case NodeType.End:
         return this.injector
-          .get(CreateCloseNodeHandler)
-          .handle(new CreateCloseNodeRequest(request.position));
+          .get(CreateEndNodeHandler)
+          .handle(new CreateEndNodeRequest(request.position));
 
       default:
         throw new Error('Unknown node type');

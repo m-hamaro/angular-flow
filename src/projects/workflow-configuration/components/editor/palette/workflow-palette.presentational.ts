@@ -20,7 +20,7 @@ import { FFlowModule } from '@foblex/flow';
   imports: [IconButtonPresentational, MatTooltip, FFlowModule],
 })
 export class WorkflowPalettePresentational implements OnChanges {
-  viewModel = input.required<IFlowViewModel>();
+  readonly viewModel = input.required<IFlowViewModel>();
 
   protected nodes = Object.keys(NODE_STATIC_MAP).map((key: string) => {
     return {
@@ -35,10 +35,15 @@ export class WorkflowPalettePresentational implements OnChanges {
   }
 
   private limitNodes(): void {
+    // StartとEndは1つのフローで1回しか使えないように制限する
     this.nodes.forEach((x) => {
       if (x.type === NodeType.Start) {
         x.disabled = !!this.viewModel()?.nodes.some(
           (y) => y.type === NodeType.Start
+        );
+      } else if (x.type === NodeType.End) {
+        x.disabled = !!this.viewModel()?.nodes.some(
+          (y) => y.type === NodeType.End
         );
       }
     });

@@ -32,7 +32,7 @@ export const NODE_STATIC_MAP: IMap<INodeStaticMapItem> = {
     color: '#008000',
     isExpandable: true,
   },
-  [NodeType.Close]: {
+  [NodeType.End]: {
     name: '終了',
     icon: 'square_dot',
     color: '#ff859b',
