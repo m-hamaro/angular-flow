@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { filter, of, startWith, Subscription, switchMap } from 'rxjs';
+import { filter, startWith, Subscription } from 'rxjs';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
 import {
   NavigationEnd,
@@ -20,9 +20,8 @@ import {
 import { CreateFlowAction } from '../../../../domain/flow/create/create-flow-action';
 import { IconButtonPresentational } from '../../../../shared/icon-button/icon-button.presentational';
 import { RemoveFlowAction } from '../../../../domain/flow/remove/remove-flow-action';
-import { INodeModel } from '../../../../domain/flow/interface/i-node-model';
-import { NodeType } from '../../../../types/node-type';
 import { IFlowModel } from '../../../../domain/flow/interface/i-flow-model';
+import { v7 as uuidv7 } from 'uuid';
 
 const entityName = 'flow';
 
@@ -77,7 +76,7 @@ export class WorkflowListPresentational implements OnInit, OnDestroy {
   }
 
   onCreate(): void {
-    const key = crypto.randomUUID();
+    const key = uuidv7();
 
     const action = new CreateFlowAction(key, `${entityName}${Date.now()}`);
 

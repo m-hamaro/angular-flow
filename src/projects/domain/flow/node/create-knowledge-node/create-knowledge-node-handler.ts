@@ -3,6 +3,7 @@ import { CreateKnowledgeNodeRequest } from './create-knowledge-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
 import { IEntitySummary } from '../../../../shared/form-builder/interface/i-entity-summary';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,9 @@ export class CreateKnowledgeNodeHandler {
     const knowledgeData = this.fetchKnowledgeList();
 
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
       description: '',
-      input: crypto.randomUUID + '_input',
+      input: uuidv7() + '_input',
       outputs: knowledgeData,
       position: request.position,
       type: NodeType.Knowledge,
@@ -44,7 +45,7 @@ export class CreateKnowledgeNodeHandler {
   private fetchKnowledgeList() {
     return [
       {
-        key: crypto.randomUUID(),
+        key: `a7767e41-29e7-24c0-0d7d-6b1d200cea23`,
         name: '独自AI1',
       },
     ];

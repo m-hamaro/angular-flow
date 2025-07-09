@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
 import { CreateEndNodeRequest } from './create-end-node-request';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +10,9 @@ import { CreateEndNodeRequest } from './create-end-node-request';
 export class CreateEndNodeHandler {
   handle(request: CreateEndNodeRequest): INodeModel {
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
 
-      input: `${crypto.randomUUID()}_input`,
+      input: `${uuidv7()}_input`,
 
       outputs: [],
 

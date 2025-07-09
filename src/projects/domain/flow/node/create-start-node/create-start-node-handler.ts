@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
 import { CreateStartNodeRequest } from './create-start-node-request';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -9,11 +10,11 @@ import { CreateStartNodeRequest } from './create-start-node-request';
 export class CreateStartNodeHandler {
   handle(request: CreateStartNodeRequest): INodeModel {
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
 
       outputs: [
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: '',
         },
       ],

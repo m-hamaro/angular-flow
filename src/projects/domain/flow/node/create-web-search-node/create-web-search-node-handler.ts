@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CreateWebSearchNodeRequest } from './create-web-search-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +10,13 @@ import { INodeModel } from '../../interface/i-node-model';
 export class CreateWebSearchNodeHandler {
   handle(request: CreateWebSearchNodeRequest): INodeModel {
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
 
-      input: `${crypto.randomUUID()}_input`,
+      input: `${uuidv7()}_input`,
 
       outputs: [
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: 'ウェブ検索結果',
         },
       ],

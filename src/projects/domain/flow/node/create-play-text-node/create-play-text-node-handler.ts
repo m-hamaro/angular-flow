@@ -3,6 +3,7 @@ import { FormBuilderControlType } from '../../../../types/form-builder-control-t
 import { NodeType } from '../../../../types/node-type';
 import { INodeModel } from '../../interface/i-node-model';
 import { CreatePlayTextNodeRequest } from './create-play-text-node-request';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -10,13 +11,13 @@ import { CreatePlayTextNodeRequest } from './create-play-text-node-request';
 export class CreatePlayTextNodeHandler {
   handle(request: CreatePlayTextNodeRequest): INodeModel {
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
 
-      input: `${crypto.randomUUID()}_input`,
+      input: `${uuidv7()}_input`,
 
       outputs: [
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: `質問文`,
         },
       ],
@@ -32,7 +33,7 @@ export class CreatePlayTextNodeHandler {
 
             controls: [
               {
-                key: crypto.randomUUID(),
+                key: uuidv7(),
 
                 name: `ここに内容を入力`,
 

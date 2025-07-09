@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MapToConnectionViewModelRequest } from './map-to-connection-view-model-request';
 import { INodeModel } from '../../../../domain/flow/interface/i-node-model';
 import { IConnectionViewModel } from '../../../interface/i-connection-view-model';
+import { v7 as uuidv7 } from 'uuid';
 
 // TODO: root?
 @Injectable()
@@ -17,7 +18,7 @@ export class MapToConnectionViewModelHandler {
       .filter((x) => !!x.connectedTo)
       .map((x) => {
         return {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           from: x.key,
           to: x.connectedTo,
           name: x.name,

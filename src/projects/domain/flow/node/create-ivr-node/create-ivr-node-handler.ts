@@ -3,6 +3,7 @@ import { INodeModel } from '../../interface/i-node-model';
 import { CreateIvrNodeRequest } from './create-ivr-node-request';
 import { NodeType } from '../../../../types/node-type';
 import { FormBuilderControlType } from '../../../../types/form-builder-control-type';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -10,20 +11,20 @@ import { FormBuilderControlType } from '../../../../types/form-builder-control-t
 export class CreateIvrNodeHandler {
   public handle(request: CreateIvrNodeRequest): INodeModel {
     return {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
       description: 'Input Caller Lookup',
-      input: crypto.randomUUID() + '_input',
+      input: uuidv7() + '_input',
       outputs: [
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: 'Output 1',
         },
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: 'Output 2',
         },
         {
-          key: crypto.randomUUID(),
+          key: uuidv7(),
           name: 'Output 3',
         },
       ],
@@ -35,7 +36,7 @@ export class CreateIvrNodeHandler {
             name: 'Select Number of Outputs',
             controls: [
               {
-                key: crypto.randomUUID(),
+                key: uuidv7(),
                 name: 'Outputs',
                 type: FormBuilderControlType.OUTPUTS_SELECT,
                 value: 3,

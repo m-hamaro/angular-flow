@@ -4,6 +4,7 @@ import { IFlowViewModel } from '../../../interface/i-flow-view-model';
 import { INodeModel } from '../../../../domain/flow/interface/i-node-model';
 import { IConnectionViewModel } from '../../../interface/i-connection-view-model';
 import { CreateConnectionAction } from '../../../../domain/flow/create-connection/create-connection-action';
+import { v7 as uuidv7 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -54,7 +55,7 @@ export class CreateConnectionHandler {
     outputName: string
   ): IConnectionViewModel {
     const result = {
-      key: crypto.randomUUID(),
+      key: uuidv7(),
       from: outputKey,
       to: inputKey,
       name: outputName,

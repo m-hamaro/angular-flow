@@ -4,7 +4,7 @@
     [placeholder]="viewModel.name"
     [formControl]="viewModel.formControl"
   >
-    @for (knowledge of knowledgeList; track $index) {
+    @for (knowledge of knowledgeList; track knowledge.key) {
     <mat-option [value]="knowledge">{{knowledge.name}}</mat-option>
     }
   </mat-select>

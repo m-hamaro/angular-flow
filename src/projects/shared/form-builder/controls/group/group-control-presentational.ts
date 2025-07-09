@@ -36,16 +36,17 @@ export class GroupControlPresentational {
       const component = this.viewContainer!.createComponent(
         FORM_BUILDER_CONTROL_MAP[control.type]
       );
+
       component.instance.viewModel = control;
 
       if (control.type === FormBuilderControlType.KNOWLEDGE_SELECT) {
         component.instance.knowledgeList = [
           {
-            key: crypto.randomUUID(),
+            key: `a7767e41-29e7-24c0-0d7d-6b1d200cea23`,
             name: '独自AI1',
           },
           {
-            key: crypto.randomUUID(),
+            key: `9ddb866a-92cf-6668-5cbb-3c446680f868`,
             name: '独自AI2',
           },
         ];
