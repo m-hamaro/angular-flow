@@ -238,7 +238,7 @@ export class WorkflowEditorPresentational
   }
 
   onReassignConnection(event: FReassignConnectionEvent): void {
-    if (!event.newFInputId || !this.viewModel()) {
+    if (!event.newSourceId || !this.viewModel()) {
       return;
     }
 
@@ -247,9 +247,9 @@ export class WorkflowEditorPresentational
       .handle(
         new ReassignConnectionRequest(
           this.viewModel()!,
-          event.fOutputId,
-          event.oldFInputId,
-          event.newFInputId
+          event.newSourceId,
+          event.oldSourceId,
+          event.newSourceId
         )
       );
 
