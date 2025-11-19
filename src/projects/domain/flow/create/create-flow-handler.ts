@@ -5,6 +5,7 @@ import { CreateStartNodeHandler } from '../node/create-start-node/create-start-n
 import { CreateStartNodeRequest } from '../node/create-start-node/create-start-node-request';
 import { CreateEndNodeHandler } from '../node/create-end-node/create-end-node-handler';
 import { CreateEndNodeRequest } from '../node/create-end-node/create-end-node-request';
+import { INodeModel } from '../interface/i-node-model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,7 @@ export class CreateFlowHandler {
 
     const width: number = window.innerWidth;
 
-    const startNode = this.injector
+    const startNode:INodeModel<string> = this.injector
       .get(CreateStartNodeHandler)
       .handle(
         new CreateStartNodeRequest({ x: width / 2, y: (height / 8) * 2 })
